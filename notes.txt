@@ -1,0 +1,7 @@
+
+
+nog naar kijken:
+	-distance nog aanpassen van size_type naar ::distance
+
+AVL:
+	de sentinals staan los van
