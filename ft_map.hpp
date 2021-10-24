@@ -6,7 +6,7 @@
 /*   By: avan-ber <avan-ber@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/10/12 09:13:43 by avan-ber      #+#    #+#                 */
-/*   Updated: 2021/10/22 14:16:42 by avan-ber      ########   odam.nl         */
+/*   Updated: 2021/10/24 12:40:45 by abelfrancis   ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,23 +94,8 @@ namespace ft {
 				return y;
 			}
 
-			node_pointer	_balance(node_pointer root)
+			node_pointer	_balance(node_pointer root, const value_type& value)
 			{
-
-			}
-
-			node_pointer	_insertNewNode(node_pointer root, const value_type& value)
-			{
-				if (!root)
-					return (this->_newNode());
-				if (value_type < root->data) //dit moet de compare functie worden; Ook bij volgende vergelijkingen
-					root->left = _insertNewNode(root->left, value);
-				else if (root->data < newNode->data)
-					root->right = _insertNewNode(root->right, value);
-				else
-					return (root);
-				_updateHeight(root);
-
 				int balance = getBalance(root);
 				if (balance > 1 && value < root->left->data) //Left Left Case
 					return rightRotate(root);
@@ -127,6 +112,21 @@ namespace ft {
 					return leftRotate(root);
 				}
 				return root;
+			}
+
+			node_pointer	_insertNewNode(node_pointer root, const value_type& value)
+			{
+				if (!root)
+					return (this->_newNode());
+				if (value_type < root->data) //dit moet de compare functie worden; Ook bij volgende vergelijkingen
+					root->left = _insertNewNode(root->left, value);
+				else if (root->data < newNode->data)
+					root->right = _insertNewNode(root->right, value);
+				else
+					return (root);
+				_updateHeight(root);
+
+				return this->_balance(root, value);
 			}
 
 			node_pointer	_newNode (const value_type& value, node_pointer parent)
@@ -178,6 +178,16 @@ namespace ft {
 			void	_updateHeight (node_pointer	N)
 			{
 				N->height = max(height(N->left), height(N->right)) + 1;
+			}
+
+			void	_setSentinelInfoConstruct()
+			{
+				this->_firstSentinel.firstSentinel = &this->_firstSentinel;
+				this->_firstSentinel.lastSentinel = & this->_lastSentinel;
+				this->_lastSentinel.firstSentinel = &this->_firstSentinel;
+				this->_lastSentinel.lastSentinel = & this->_lastSentinel;
+				this->_firstSentinel.parent = this->_root;
+				this->_lastSentinel.parent = this->_root;
 			}
 		public:
 
@@ -255,14 +265,25 @@ namespace ft {
 			///////////////
 
 			key_compare key_comp() const;
+			{
+				return this->_compare;
+			}
 
-			// value_compare value_comp() const;
+			// value_compare value_comp() const
+			// {
+
+			// }
 
 			////////////////
 			// operations //
 			////////////////
 
-			size_type	count (const key_type& k) const;
+			size_type	count (const key_type& k) const
+			{
+				if (this->find(k) == this->end())
+					return (0);
+				return (1);
+			}
 
 			iterator	_find (node_pointer node, const key_type& k) // moet evrvangen worden door de varianten met iterators
 			{
@@ -293,14 +314,46 @@ namespace ft {
 				return (this->_find(this->_root, k));
 			}
 
-			// iterator	lower_bound (const key_type& k);
-			// const_iterator	lower_bound (const key_type& k) const;
+			iterator	lower_bound (const key_type& k)
+			{
+				iterator itr = this->begin();
+				while (itr != this->end() && this->_compare(itr->first, k) == true)
+					itr++;
+				return (itr);
+			}
+			const_iterator	lower_bound (const key_type& k) const
+			{
+				const_iterator c_itr = this->begin();
+				while (c_itr != this->end() && this->_compare(c_itr->first, k) == true)
+					c_itr++;
+				return (c_itr);
+			}
 
-			// iterator	upper_bound (const key_type& k);
-			// const_iterator	upper_bound (const key_type& k) const;
+			iterator	upper_bound (const key_type& k)
+			{
+				iterator itr = this->begin();
+				while (itr != this->end() && this->_compare(k, itr->first) == false)
+					itr++;
+				return (itr);
+			}
+			
+			const_iterator	upper_bound (const key_type& k) const
+			{
+				const_iterator c_itr = this->begin();
+				while (c_itr != this->end() && this->_compare(k, c_itr->first) == false)
+					c_itr++;
+				return (c_itr);
+			}
 
-			// pair<iterator,iterator>	equal_range (const key_type& k);
-			// pair<const_iterator,const_iterator>	equal_range (const key_type& k) const;
+			pair<iterator,iterator>	equal_range (const key_type& k)
+			{
+				return make_pair(this->lower_bound(k), this->upper_bound(k));
+			}
+			
+			pair<const_iterator,const_iterator>	equal_range (const key_type& k) const;
+			{
+				return make_pair(this->lower_bound(k), this->upper_bound(k));
+			}
 
 			///////////////
 			// Allocator //
@@ -318,29 +371,30 @@ namespace ft {
 					this->clear();
 				this->_compare = x._compare;
 				this->_alloc = x._alloc;
-				this->_copyTree(x);
+				this->insert(x.begin(), x.end());
 			}
 
 			//////////////////
 			// constructors //
 			//////////////////
-			map (const map& x) : _root(NULL), _size(0), _compare(x.compare), _alloc(x._alloc)
+			map (const map& x) : _size(0), _compare(x.compare), _alloc(x._alloc)
 			{
+				this->_setSentinelInfoConstruct();
 				*this = x;
 				return ;
 			}
 
-			// template <class InputIterator>
-			// map (InputIterator first, InputIterator last, const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type())
+			template <class InputIterator>
+			map (InputIterator first, InputIterator last, const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type())
+			{
+				this->_setSentinelInfoConstruct();
+				this->insert(x.begin(), x.end());
+			}
 
 			explicit map (const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()) : _size(0), _compare(comp), _alloc(alloc)
 			{
-				this->_firstSentinel.firstSentinel = &this->_firstSentinel;
-				this->_firstSentinel.lastSentinel = & this->_lastSentinel;
-				this->_lastSentinel.firstSentinel = &this->_firstSentinel;
-				this->_lastSentinel.lastSentinel = & this->_lastSentinel;
-				this->_firstSentinel.parent = this->_root;
-				this->_lastSentinel.parent = this->_root;
+				this->_setSentinelInfoConstruct();
+				return ;
 			}
 
 			/////////////////
@@ -353,6 +407,25 @@ namespace ft {
 			}
 
 	}; //end class map
+
+	template <class Key, class T, class Compare, class Alloc>
+	class map<Key,T,Compare,Alloc>::value_compare
+	{   // in C++98, it is required to inherit binary_function<value_type,value_type,bool>
+		friend class map;
+		protected:
+			Compare comp;
+			value_compare (Compare c) : comp(c) {}  // constructed with map's comparison object
+		public:
+			typedef bool result_type;
+			typedef value_type first_argument_type;
+			typedef value_type second_argument_type;
+		
+			bool operator() (const value_type& x, const value_type& y) const
+			{
+				return comp(x.first, y.first);
+			}
+	}
+
 } // end namespace
 
 #endif
