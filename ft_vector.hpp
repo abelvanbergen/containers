@@ -6,7 +6,7 @@
 /*   By: avan-ber <avan-ber@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/09/10 10:59:42 by avan-ber      #+#    #+#                 */
-/*   Updated: 2021/10/15 09:35:33 by avan-ber      ########   odam.nl         */
+/*   Updated: 2021/11/05 11:27:57 by avan-ber      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@ namespace ft {
 			typedef const value_type*								const_pointer;
 			typedef random_access_iterator<T, T*, T&>				iterator;
 			typedef random_access_iterator<T, const T*, const T&>	const_iterator;
+			typedef iterator_traits<iterator>::difference_type		difference_type;
 			typedef std::size_t										size_type;
 
 		private:
@@ -63,15 +64,6 @@ namespace ft {
 				this->_size = len;
 				this->_capacity = n;
 				this->_array = temp;
-			}
-
-			template< typename U>
-			void		_swap (U& x, U& y)
-			{
-				U	swap;
-				swap = x;
-				x = y;
-				y = swap;
 			}
 
 		public:
@@ -321,9 +313,9 @@ namespace ft {
 
 			void	swap (vector& x)
 			{
-				this->_swap(this->_array, x._array);
-				this->_swap(this->_capacity, x._capacity);
-				this->_swap(this->_size, x._size);
+				ft::swap(this->_array, x._array);
+				ft::swap(this->_capacity, x._capacity);
+				ft::swap(this->_size, x._size);
 			}
 
 			void	clear ()

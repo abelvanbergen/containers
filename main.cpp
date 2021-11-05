@@ -6,7 +6,7 @@
 /*   By: avan-ber <avan-ber@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/09/29 08:53:50 by avan-ber      #+#    #+#                 */
-/*   Updated: 2021/10/11 11:58:50 by avan-ber      ########   odam.nl         */
+/*   Updated: 2021/11/02 11:18:51 by avan-ber      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,17 +21,45 @@
 #define s ft
 #endif
 
-void	testConstructors();
-void	testIterators();
-void	testResize();
-void	testReserve();
-void	testAtFrontBackPushPopClear();
-void	testSwap();
-void	testAssign();
-void	testInsert();
-void	testErase();
+void	testVector();
+void	testVConstructors();
+void	testVIterators();
+void	testVResize();
+void	testVReserve();
+void	testVAtFrontBackPushPopClear();
+void	testVSwap();
+void	testVAssign();
+void	testVInsert();
+void	testVErase();
 
+void	testMap();
+void	testMConstructors();
 
+int main(void)
+{
+	// testVector();
+	testMap();
+}
+
+void	testVector(void)
+{
+	testVConstructors();
+	testVResize();
+	testVReserve();
+	testVAtFrontBackPushPopClear();
+	testVSwap();
+	testVAssign();
+	testVInsert();
+	testVErase();
+}
+
+void	testMap(void)
+{
+	testMConstructors();
+
+}
+
+void
 
 template<typename T>
 void	printVector(s::vector<T> &vec)
@@ -51,19 +79,17 @@ void	printVector(s::vector<T> &vec)
 	std::cout << "-----------------------------------------------" << std::endl << std::endl;
 }
 
-int main(void)
+void printMap(mapNode *root)
 {
-	testConstructors();
-	testResize();
-	testReserve();
-	testAtFrontBackPushPopClear();
-	testSwap();
-	testAssign();
-	testInsert();
-	testErase();
+    if(root != NULL)
+    {
+        std::cout << root->key << " ";
+        preOrder(root->left);
+        preOrder(root->right);
+    }
 }
 
-void	testConstructors()
+void	testVConstructors()
 {
 	std::cout << "+--------------+" << std::endl;
 	std::cout << "| constructors |" << std::endl;
@@ -116,7 +142,7 @@ void	testConstructors()
 	std::cout << std::endl << std::endl << std::endl;
 }
 
-void	testResize()
+void	testVResize()
 {
 	std::cout << "+--------+" << std::endl;
 	std::cout << "| Resize |" << std::endl;
@@ -139,7 +165,7 @@ void	testResize()
 	std::cout << std::endl << std::endl << std::endl;
 }
 
-void	testReserve()
+void	testVReserve()
 {
 	std::cout << "+---------+" << std::endl;
 	std::cout << "| Reserve |" << std::endl;
@@ -166,7 +192,7 @@ void	testReserve()
 	std::cout << std::endl << std::endl << std::endl;
 }
 
-void	testAtFrontBackPushPopClear()
+void	testVAtFrontBackPushPopClear()
 {
 	std::cout << "+-----------------------------------+" << std::endl;
 	std::cout << "| At, Front, Back, Push, Pop, Clear |" << std::endl;
@@ -220,7 +246,7 @@ void	testAtFrontBackPushPopClear()
 	std::cout << std::endl << std::endl << std::endl;
 }
 
-void	testSwap()
+void	testVSwap()
 {
 	std::cout << "+------+" << std::endl;
 	std::cout << "| Swap |" << std::endl;
@@ -239,7 +265,7 @@ void	testSwap()
 	std::cout << std::endl << std::endl << std::endl;
 }
 
-void	testAssign()
+void	testVAssign()
 {
 	std::cout << "+--------+" << std::endl;
 	std::cout << "| Assign |" << std::endl;
@@ -274,7 +300,7 @@ void	testAssign()
 	std::cout << std::endl << std::endl << std::endl;
 }
 
-void	testInsert()
+void	testVInsert()
 {
 	std::cout << "+--------+" << std::endl;
 	std::cout << "| Insert |" << std::endl;
@@ -354,7 +380,7 @@ void	testInsert()
 	}
 }
 
-void	testErase()
+void	testVErase()
 {
 	s::vector<char> one(20, '+');
 
@@ -374,4 +400,29 @@ void	testErase()
 	printVector(one);
 	one.erase(one.begin(), one.end());
 	printVector(one);
+}
+
+void	testMConstructors()
+{
+	s::map<int, char> one;
+	s::map<int, char> two(one);
+	s::map<int, char> three(one.begin(), one.end());
+	s::map<int, char> four;
+	four[1] = "This";
+	four[2] = "is";
+	four[3] = "a";
+	four[4] = "small";
+	four[5] = "test";
+	four[6] = "to";
+	four[7] = "test";
+	four[8] = "the";
+	four[9] = "constructors";
+	s::map<int, char> five(four);
+	s::map<int, char> six(five.begin(), five.end());
+	printMap(one);
+	printMap(two);
+	printMap(three);
+	printMap(four);
+	printMap(five);
+	printMap(six);
 }

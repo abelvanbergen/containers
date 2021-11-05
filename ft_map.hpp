@@ -6,7 +6,7 @@
 /*   By: avan-ber <avan-ber@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/10/12 09:13:43 by avan-ber      #+#    #+#                 */
-/*   Updated: 2021/10/24 12:40:45 by abelfrancis   ########   odam.nl         */
+/*   Updated: 2021/11/05 11:24:31 by avan-ber      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,21 @@ namespace ft {
 			typedef	const value_type*								const_pointer;
 			typedef bidirectional_iterator<value_type>				iterator;
 			typedef bidirectional_iterator<const value_type>		const_iterator;
+			typedef iterator_traits<iterator>::difference_type		difference_type;
 			typedef std::size_t										size_type;
+
+		public:
+			class value_compare
+			{
+				protected:
+  					Compare	comp;
+					value_compare (Compare c) : comp(c) {return ;}
+				public:
+					bool operator() (const value_type& x, const value_type& y) const
+					{
+						return comp(x.first, y.first);
+					}
+			}
 
 		private:
 			typedef mapNode<value_type>								node;
@@ -53,13 +67,14 @@ namespace ft {
 			node_pointer			_root;
 			size_type				_size;
 			key_compare				_compare;
+			value_compare			_valueCompare;
 			node_alloc				_alloc;
 
 			///////////////////
 			// BST functions //
 			///////////////////
 
-			node_pointer	rightRotate (node_pointer y)
+			node_pointer	_rightRotate (node_pointer y)
 			{
 				node_pointer x = y->left;
 				node_pointer T2 = y->right;
@@ -71,13 +86,13 @@ namespace ft {
 				x->right = y;
 				y->left = T2;
 
-				_updateHeight(y);
-				_updateHeight(x);
+				this->_updateHeight(y);
+				this->_updateHeight(x);
 
 				return x;
 			}
 
-			node_pointer	leftRotate (node_pointer x)
+			node_pointer	_leftRotate (node_pointer x)
 			{
 				node_pointer y = x->right;
 				node_pointer T2 = x->left;
@@ -89,27 +104,47 @@ namespace ft {
 				y->left = x;
 				x->right = T2;
 
-				_updateHeight(x);
-				_updateHeight(y);
+				this->_updateHeight(x);
+				this->_updateHeight(y);
 				return y;
 			}
 
-			node_pointer	_balance(node_pointer root, const value_type& value)
+			node_pointer	_balanceForInsertion(node_pointer root, const value_type& value)
 			{
-				int balance = getBalance(root);
-				if (balance > 1 && value < root->left->data) //Left Left Case
-					return rightRotate(root);
-				if (balance < -1 && value > root->right->data) //Right Left Case
-					return leftRotate(root);
-				if (balance > 1 && value > root->left->data) //Left Right Case
+				int balance = _getBalance(root);
+				if (balance > 1 && this->_valueCompare()(value, root->left->data))
+					return this->_rightRotate(root);
+				if (balance < -1 && this->_valueCompare()(root->left->data, value))
+					return this->_leftRotate(root);
+				if (balance > 1 && this->_valueCompare()(root->left->data, value)) //Left Right Case
 				{
-					root->left = leftRotate(root->left);
-					return rightRotate(root);
+					root->left = this->_leftRotate(root->left);
+					return this->_rightRotate(root);
 				}
-				if (balance < -1 && value < root->right->data) //Right Left Case
+				if (balance < -1 && this->_valueCompare()(value, root->left->data)) //Right Left Case
 				{
-					root->right = rightRotate(root);
-					return leftRotate(root);
+					root->right = this->_rightRotate(root);
+					return this->_leftRotate(root);
+				}
+				return root;
+			}
+
+			node_pointer	_balanceForDeletion(node_pointer root)
+			{
+				int balance = this->_getBalance(root);
+				if (balance > 1 && this->_getBalance(root->left) >= 0)
+					return this->_rightRotate(root);
+				if (balance > 1 && this->_getBalance(root->left) < 0)
+				{
+					root->left = this->_leftRotate(root->left);
+					return this->_rightRotate(root);
+				}
+				if (balance < -1 && this->_getBalance(root->right) <= 0)
+					return this->_leftRotate(root);
+				if (balance < -1 && this->_getBalance(root->right) > 0)
+				{
+					root->right = this->_rightRotate(root->right);
+					return this->_leftRotate(root);
 				}
 				return root;
 			}
@@ -118,15 +153,15 @@ namespace ft {
 			{
 				if (!root)
 					return (this->_newNode());
-				if (value_type < root->data) //dit moet de compare functie worden; Ook bij volgende vergelijkingen
+				if (this->_valueCompare()(value_type, root->data))
 					root->left = _insertNewNode(root->left, value);
-				else if (root->data < newNode->data)
+				else if (this->_valueCompare()(root->data, value_type))
 					root->right = _insertNewNode(root->right, value);
 				else
 					return (root);
-				_updateHeight(root);
+				this->_updateHeight(root);
 
-				return this->_balance(root, value);
+				return this->_balanceForInsertion(root, value);
 			}
 
 			node_pointer	_newNode (const value_type& value, node_pointer parent)
@@ -141,11 +176,45 @@ namespace ft {
 				return(newNode);
 			}
 
-			void	_deleteNode(node_pointer toDelete)
+			void	_deleteNode(node_pointer root)
 			{
-				this->_alloc.destroy(toDelete);
-				this->_alloc.deallocate(toDelete, 1);
-				this->_size--;
+				if (root->left == NULL || root->right == NULL)
+					{
+						temp = root->left ? root->left : root->right;
+						if (temp == NULL)
+						{
+							temp = root;
+							root = NULL;
+						}
+						else
+							*root = *temp;
+						this->_alloc.destroy(toDelete);
+						this->_alloc.deallocate(toDelete, 1);
+						this->_size--;
+					}
+					else
+					{
+						temp = this->_minValueNode(root->right);
+						root->data = temp->data;
+						root->right = _deleteFromTree(root->right, temp->data);
+					}
+				}
+			}
+
+			node_pointer _deleteFromTree(node_pointer root, const value_type& value)
+			{
+				if (root == NULL)
+					return root;
+				if (this->_valueCompare(value, root->data))
+					root->left = this->_deleteFromTree(root->left, value);
+				else if (this->_valueCompare(root->data, value))
+					root->right = this->_deleteFromTree(root->right, value);
+				else
+					this->_deleteNode(root);
+				if (root == NULL)
+					return (root);
+				this->_updateHeight(root);
+				return this->_balanceForDeletion(root);
 			}
 
 			void	_clearTree(node_pointer root)
@@ -160,24 +229,32 @@ namespace ft {
 				root = NULL;
 			}
 
-			int height (node_pointer N)
+			int _height (node_pointer N)
 			{
 				if (N == NULL)
 					return (0);
 				return (N->height);
 			}
 
-			int	getBalance (node_pointer N)
+			int	_getBalance (node_pointer N)
 			{
 
 				if (N == NULL)
 					return 0;
-				return height(N->left) - height(N->right);
+				return this->_height(N->left) - this->_height(N->right);
+			}
+
+			node_pointer	_minValueNode(node_pointer N)
+			{
+				node_pointer	current = N;
+				while (current->left != NULL);
+					curent = curent->left;
+				return current;
 			}
 
 			void	_updateHeight (node_pointer	N)
 			{
-				N->height = max(height(N->left), height(N->right)) + 1;
+				N->height = max(this->_height(N->left), this->_height(N->right)) + 1;
 			}
 
 			void	_setSentinelInfoConstruct()
@@ -244,18 +321,42 @@ namespace ft {
 					insert(first.data);
 			}
 
-			// void		erase (iterator position);
-			// size_type	erase (const key_type& k);
-			// void		erase (iterator first, iterator last);
+			void		erase (iterator position)
+			{
+				this->_deleteFromTree(this->_root, *position);
+			}
 
-			// void	swap (map& x);
+			size_type	erase (const key_type& k)
+			{
+				iterator itr = find(k);
+				if (itr == this->_end())
+					return (0);
+				this->erase(itr);
+				return (1);
+			}
+			void		erase (iterator first, iterator last)
+			{
+				for (; first != last; first++)
+					this->erase(first);
+			}
 
-			void	clear()
+			void	swap (map& x)
+			{
+				ft::swap(this->_firstSentinel, x._firstSentinel);
+				ft::swap(this->_lastSentinel, x._lastSentinel);
+				ft::swap(this->_root, x._root);
+				ft::swap(this->_size, x._size);
+				ft::swap(this->_compare, x._compare);
+				ft::swap(this->_valueCompare, x._valueCompare);
+				ft::swap(this->_alloc, x._alloc);
+			}
+
+			void	clear ()
 			{
 				_clearTree(this->_root);
 			}
 
-			key_type	test()
+			key_type	test ()
 			{
 				return (this->_root->data.first);
 			}
@@ -269,10 +370,10 @@ namespace ft {
 				return this->_compare;
 			}
 
-			// value_compare value_comp() const
-			// {
-
-			// }
+			value_compare value_comp() const
+			{
+				return (this->_valueCompare);
+			}
 
 			////////////////
 			// operations //
@@ -285,19 +386,18 @@ namespace ft {
 				return (1);
 			}
 
-			iterator	_find (node_pointer node, const key_type& k) // moet evrvangen worden door de varianten met iterators
+			iterator	_find (node_pointer node, const key_type& k)
 			{
 				if (node->data.first == k)
 					return iterator(node);
-				if (node->left == NULL && k < node->data.first)
+				if (node->left == NULL && this->_comp(k, node->data.first))
 					return this->end();
-				if (node->right == NULL && k > node->data.first)
+				if (node->right == NULL && this->_comp(node->data.first, k))
 					return this->end();
-				if (k < node->data.first)
-					_find(node->left, k);
+				if (this->_comp(k, node->data.first))
+					return _find(node->left, k);
 				else
-					_find(node->right, k);
-				return this->end();
+					return _find(node->right, k);
 			}
 
 			iterator	find (const key_type& k)
@@ -336,7 +436,7 @@ namespace ft {
 					itr++;
 				return (itr);
 			}
-			
+
 			const_iterator	upper_bound (const key_type& k) const
 			{
 				const_iterator c_itr = this->begin();
@@ -349,7 +449,7 @@ namespace ft {
 			{
 				return make_pair(this->lower_bound(k), this->upper_bound(k));
 			}
-			
+
 			pair<const_iterator,const_iterator>	equal_range (const key_type& k) const;
 			{
 				return make_pair(this->lower_bound(k), this->upper_bound(k));
@@ -377,7 +477,7 @@ namespace ft {
 			//////////////////
 			// constructors //
 			//////////////////
-			map (const map& x) : _size(0), _compare(x.compare), _alloc(x._alloc)
+			map (const map& x) : _size(0), _compare(x.compare),  _valueCompare(x.comp), _alloc(x._alloc)
 			{
 				this->_setSentinelInfoConstruct();
 				*this = x;
@@ -385,13 +485,13 @@ namespace ft {
 			}
 
 			template <class InputIterator>
-			map (InputIterator first, InputIterator last, const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type())
+			map (InputIterator first, InputIterator last, const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()) : _size(0), _compare(comp), _valueCompare(comp) _alloc(alloc)
 			{
 				this->_setSentinelInfoConstruct();
 				this->insert(x.begin(), x.end());
 			}
 
-			explicit map (const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()) : _size(0), _compare(comp), _alloc(alloc)
+			explicit map (const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()) : _size(0), _compare(comp), _valueCompare(comp), _alloc(alloc)
 			{
 				this->_setSentinelInfoConstruct();
 				return ;
@@ -407,24 +507,6 @@ namespace ft {
 			}
 
 	}; //end class map
-
-	template <class Key, class T, class Compare, class Alloc>
-	class map<Key,T,Compare,Alloc>::value_compare
-	{   // in C++98, it is required to inherit binary_function<value_type,value_type,bool>
-		friend class map;
-		protected:
-			Compare comp;
-			value_compare (Compare c) : comp(c) {}  // constructed with map's comparison object
-		public:
-			typedef bool result_type;
-			typedef value_type first_argument_type;
-			typedef value_type second_argument_type;
-		
-			bool operator() (const value_type& x, const value_type& y) const
-			{
-				return comp(x.first, y.first);
-			}
-	}
 
 } // end namespace
 

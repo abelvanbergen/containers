@@ -6,7 +6,7 @@
 /*   By: avan-ber <avan-ber@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/10/13 09:21:19 by avan-ber      #+#    #+#                 */
-/*   Updated: 2021/10/21 11:07:02 by avan-ber      ########   odam.nl         */
+/*   Updated: 2021/10/28 11:48:07 by avan-ber      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,6 +129,8 @@ namespace ft {
 				this->left = srcs.left;
 				this->right = srcs.right;
 				this->parent = srcs.parent;
+				this->firstSentinel = srcs.firstSentinel;
+				this->lastSentinel = srcs.lastSentinel;
 				this->height = srcs.height;
 				return *this;
 			}
