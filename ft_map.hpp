@@ -6,7 +6,7 @@
 /*   By: avan-ber <avan-ber@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/10/12 09:13:43 by avan-ber      #+#    #+#                 */
-/*   Updated: 2021/11/09 09:17:47 by avan-ber      ########   odam.nl         */
+/*   Updated: 2021/11/09 14:45:08 by avan-ber      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -199,9 +199,8 @@ namespace ft {
 				}
 				else
 				{
-					temp = this->_minValueNode(root->right);
-					this->_setMinValueNodeNull(root->right);
-					root->data = temp->data;									//key is const dus dit kan niet, ik moet dus zorgen dat ie hem wel goed verwijderd
+					temp = this->_getNodeToReplace(root->right);
+					root.swap(temp);								//key is const dus dit kan niet, ik moet dus zorgen dat ie hem wel goed verwijderd
 					root->right = _deleteFromTree(root->right, temp->data);
 				}
 			}
@@ -249,11 +248,18 @@ namespace ft {
 				return this->_height(N->left) - this->_height(N->right);
 			}
 
-			void	_setMinValueNodeNull(node_pointer N)
+			node_pointer	_getNodeToReplace(node_pointer N)
 			{
-				while (N->left->left != NULL)
-					N = N->left;
-				N->left = NULL;
+				node_pointer current = N;
+				while (current->left != NULL)
+					current = current->left;
+				if (current->parent->left == this)
+					current->parent->left = current->right;
+				else
+					current->parent->right = current->right;
+				if (current->right != NULL)
+					current->right->parent = current->parent;
+				return current;
 			}
 
 			node_pointer	_minValueNode(node_pointer N)
