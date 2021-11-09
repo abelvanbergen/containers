@@ -6,7 +6,7 @@
 /*   By: avan-ber <avan-ber@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/10/12 09:13:43 by avan-ber      #+#    #+#                 */
-/*   Updated: 2021/11/05 11:24:31 by avan-ber      ########   odam.nl         */
+/*   Updated: 2021/11/09 09:17:47 by avan-ber      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,19 +29,19 @@ namespace ft {
 		// typedefs //
 		//////////////
 		public:
-			typedef Key												key_type;
-			typedef T												mapped_type;
-			typedef ft::pair<const key_type, mapped_type>			value_type;
-			typedef Compare											key_compare;
-			typedef Alloc											allocator_type;
-			typedef value_type&										reference;
-			typedef const value_type&								const_reference;
-			typedef value_type*										pointer;
-			typedef	const value_type*								const_pointer;
-			typedef bidirectional_iterator<value_type>				iterator;
-			typedef bidirectional_iterator<const value_type>		const_iterator;
-			typedef iterator_traits<iterator>::difference_type		difference_type;
-			typedef std::size_t										size_type;
+			typedef Key													key_type;
+			typedef T													mapped_type;
+			typedef ft::pair<const key_type, mapped_type>				value_type;
+			typedef Compare												key_compare;
+			typedef Alloc												allocator_type;
+			typedef value_type&											reference;
+			typedef const value_type&									const_reference;
+			typedef value_type*											pointer;
+			typedef	const value_type*									const_pointer;
+			typedef bidirectional_iterator<value_type>					iterator;
+			typedef bidirectional_iterator<const value_type>			const_iterator;
+			typedef typename iterator_traits<iterator>::difference_type	difference_type;
+			typedef typename allocator_type::size_type					size_type;
 
 		public:
 			class value_compare
@@ -54,12 +54,13 @@ namespace ft {
 					{
 						return comp(x.first, y.first);
 					}
-			}
+				friend class map;
+			};
 
 		private:
-			typedef mapNode<value_type>								node;
-			typedef node*											node_pointer;
-			typedef typename Alloc::template rebind<node>::other	node_alloc;
+			typedef mapNode<value_type>									node;
+			typedef node*												node_pointer;
+			typedef typename Alloc::template rebind<node>::other		node_alloc;
 
 		private:
 			node					_firstSentinel;
@@ -153,9 +154,9 @@ namespace ft {
 			{
 				if (!root)
 					return (this->_newNode());
-				if (this->_valueCompare()(value_type, root->data))
+				if (this->_valueCompare()(value, root->data))
 					root->left = _insertNewNode(root->left, value);
-				else if (this->_valueCompare()(root->data, value_type))
+				else if (this->_valueCompare()(root->data, value))
 					root->right = _insertNewNode(root->right, value);
 				else
 					return (root);
@@ -176,28 +177,32 @@ namespace ft {
 				return(newNode);
 			}
 
-			void	_deleteNode(node_pointer root)
+			void	_changeNeighbours()
+
+			void	_deleteNode (node_pointer root)
 			{
+				node_pointer	temp;
+		
 				if (root->left == NULL || root->right == NULL)
+				{
+					temp = root->left ? root->left : root->right;
+					if (temp == NULL)
 					{
-						temp = root->left ? root->left : root->right;
-						if (temp == NULL)
-						{
-							temp = root;
-							root = NULL;
-						}
-						else
-							*root = *temp;
-						this->_alloc.destroy(toDelete);
-						this->_alloc.deallocate(toDelete, 1);
-						this->_size--;
+						temp = root;
+						root = NULL;
 					}
 					else
-					{
-						temp = this->_minValueNode(root->right);
-						root->data = temp->data;
-						root->right = _deleteFromTree(root->right, temp->data);
-					}
+						*root = *temp;
+					this->_alloc.destroy(temp);
+					this->_alloc.deallocate(temp, 1);
+					this->_size--;
+				}
+				else
+				{
+					temp = this->_minValueNode(root->right);
+					this->_setMinValueNodeNull(root->right);
+					root->data = temp->data;									//key is const dus dit kan niet, ik moet dus zorgen dat ie hem wel goed verwijderd
+					root->right = _deleteFromTree(root->right, temp->data);
 				}
 			}
 
@@ -244,11 +249,18 @@ namespace ft {
 				return this->_height(N->left) - this->_height(N->right);
 			}
 
+			void	_setMinValueNodeNull(node_pointer N)
+			{
+				while (N->left->left != NULL)
+					N = N->left;
+				N->left = NULL;
+			}
+
 			node_pointer	_minValueNode(node_pointer N)
 			{
 				node_pointer	current = N;
-				while (current->left != NULL);
-					curent = curent->left;
+				while (current->left != NULL)
+					current = current->left;
 				return current;
 			}
 
@@ -303,14 +315,15 @@ namespace ft {
 			{
 				size_type oldsize = this->_size;
 				this->_root = insertNewNode(this->_root, val);
-				iterator itr = find(va.first);
+				iterator itr = find(val.first);
 				return (make_pair(itr, this->_size > oldsize));
 			}
 
-			iterator			insert (iterator position, const value_type& val)
+			iterator	insert (iterator position, const value_type& val)
 			{
+				(void)position;
 				this->_root = insertNewNode(this->_root, val);
-				iterator itr = find(va.first);
+				iterator itr = find(val.first);
 				return itr;
 			}
 
@@ -365,7 +378,7 @@ namespace ft {
 			// observers //
 			///////////////
 
-			key_compare key_comp() const;
+			key_compare key_comp() const
 			{
 				return this->_compare;
 			}
@@ -450,7 +463,7 @@ namespace ft {
 				return make_pair(this->lower_bound(k), this->upper_bound(k));
 			}
 
-			pair<const_iterator,const_iterator>	equal_range (const key_type& k) const;
+			pair<const_iterator,const_iterator>	equal_range (const key_type& k) const
 			{
 				return make_pair(this->lower_bound(k), this->upper_bound(k));
 			}
@@ -467,17 +480,18 @@ namespace ft {
 
 			map& operator= (const map& x)
 			{
-				if (this->root != NULL)
+				if (this->_root != NULL)
 					this->clear();
 				this->_compare = x._compare;
 				this->_alloc = x._alloc;
 				this->insert(x.begin(), x.end());
+				return *this;
 			}
 
 			//////////////////
 			// constructors //
 			//////////////////
-			map (const map& x) : _size(0), _compare(x.compare),  _valueCompare(x.comp), _alloc(x._alloc)
+			map (const map& x) : _size(0), _compare(x._compare),  _valueCompare(x._compare), _alloc(x._alloc)
 			{
 				this->_setSentinelInfoConstruct();
 				*this = x;
@@ -485,10 +499,10 @@ namespace ft {
 			}
 
 			template <class InputIterator>
-			map (InputIterator first, InputIterator last, const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()) : _size(0), _compare(comp), _valueCompare(comp) _alloc(alloc)
+			map (InputIterator first, InputIterator last, const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()) : _size(0), _compare(comp), _valueCompare(comp), _alloc(alloc)
 			{
 				this->_setSentinelInfoConstruct();
-				this->insert(x.begin(), x.end());
+				this->insert(first, last);
 			}
 
 			explicit map (const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()) : _size(0), _compare(comp), _valueCompare(comp), _alloc(alloc)

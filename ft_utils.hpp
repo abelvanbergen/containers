@@ -6,7 +6,7 @@
 /*   By: avan-ber <avan-ber@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/10/11 09:42:42 by avan-ber      #+#    #+#                 */
-/*   Updated: 2021/11/05 11:14:44 by avan-ber      ########   odam.nl         */
+/*   Updated: 2021/11/08 15:01:26 by avan-ber      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ namespace ft{
 	int max (int a, int b) {return (a > b ? a : b); }
 
 	template <class T>
-	struct less : binary_function <T,T,bool>
+	struct less
 	{
   		bool operator() (const T& x, const T& y) const {return x<y;}
 	};
@@ -65,20 +65,21 @@ namespace ft{
 	template <typename Iterator>
     typename ft::iterator_traits<Iterator>::difference_type	distance (Iterator pos1, Iterator pos2)
     {
-        return distance (pos1, pos2, ft::iterator_traits<Iterator>::iterator_category()); 
+        return distance (pos1, pos2, typename ft::iterator_traits<Iterator>::iterator_category()); 
     }
+	
 	template <typename RAI>
     typename ft::iterator_traits<RAI>::difference_type	distance (RAI first_position, RAI second_position, ft::random_access_iterator_tag) 
     {
         return second_position - first_position; 
     }
 
-	template <typename InputIterator>
+	template <typename II>
     typename ft::iterator_traits<II>::difference_type	distance (II first_position, II second_position, ft::input_iterator_tag) 
     {
         typename ft::iterator_traits<II>::difference_type diff;
         for (diff=0; first_position != second_position; ++first_position)
-			diff++
+			diff++;
         return diff; 
     }  
 

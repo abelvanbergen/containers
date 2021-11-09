@@ -6,14 +6,14 @@
 #    By: avan-ber <avan-ber@student.codam.nl>         +#+                      #
 #                                                    +#+                       #
 #    Created: 2021/10/05 10:29:50 by avan-ber      #+#    #+#                  #
-#    Updated: 2021/10/11 11:55:20 by avan-ber      ########   odam.nl          #
+#    Updated: 2021/11/08 15:34:38 by avan-ber      ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = containers
 
 CC = clang++
-C++FLAGS = -Wall -Wextra -Werror -std=c++98 -pedantic
+C++FLAGS = -Wall -Wextra -Werror -std=c++98 -pedantic -fsanitize=address -g
 
 INCLUDES =	ft_vector.hpp \
 			ft_iterator.hpp \

@@ -6,7 +6,7 @@
 /*   By: avan-ber <avan-ber@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/09/10 10:59:42 by avan-ber      #+#    #+#                 */
-/*   Updated: 2021/11/05 11:27:57 by avan-ber      ########   odam.nl         */
+/*   Updated: 2021/11/08 15:51:42 by avan-ber      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 # include <exception>
 # include "ft_random_access_iterator.hpp"
 # include "ft_utils.hpp"
+# include "type_traits.hpp"
 
 namespace ft {
 	template <class T, class Alloc = std::allocator<T> >
@@ -26,16 +27,16 @@ namespace ft {
 		// typedefs //
 		//////////////
 		public:
-			typedef T												value_type;
-			typedef Alloc											allocator_type;
-			typedef value_type&										reference;
-			typedef const value_type&								const_reference;
-			typedef value_type*										pointer;
-			typedef const value_type*								const_pointer;
-			typedef random_access_iterator<T, T*, T&>				iterator;
-			typedef random_access_iterator<T, const T*, const T&>	const_iterator;
-			typedef iterator_traits<iterator>::difference_type		difference_type;
-			typedef std::size_t										size_type;
+			typedef T													value_type;
+			typedef Alloc												allocator_type;
+			typedef value_type&											reference;
+			typedef const value_type&									const_reference;
+			typedef value_type*											pointer;
+			typedef const value_type*									const_pointer;
+			typedef random_access_iterator<T, T*, T&>					iterator;
+			typedef random_access_iterator<T, const T*, const T&>		const_iterator;
+			typedef typename iterator_traits<iterator>::difference_type	difference_type;
+			typedef typename allocator_type::size_type					size_type;
 
 		private:
 			pointer					_array;
@@ -49,12 +50,12 @@ namespace ft {
 				this->_size++;
 			}
 
-			void		_resizeArray (size_type n, size_type len)
+			void		_resizeArray (size_type capacity, size_type len)
 			{
 				T*	temp;
 
-				if (n > 0)
-					temp = this->_alloc.allocate(1);
+				if (capacity > 0)
+					temp = this->_alloc.allocate(capacity);
 				else
 					temp = NULL;
 				for (size_type i = 0; i < len; i++)
@@ -62,7 +63,7 @@ namespace ft {
 				this->clear();
 				this->_alloc.deallocate(this->_array, this->_capacity);
 				this->_size = len;
-				this->_capacity = n;
+				this->_capacity = capacity;
 				this->_array = temp;
 			}
 
@@ -249,15 +250,15 @@ namespace ft {
 		public:
 			void		insert (iterator position, size_type n, const value_type& val)
 			{
-				size_type amountToConstruct;
-				size_type amountToMove;
+				difference_type amountToConstruct;
+				difference_type amountToMove;
 
 				if (n == 0)
 					return ;
-				size_type pos = ft::distance(this->begin(), position);
+				difference_type pos = ft::distance(this->begin(), position);
 				amountToMove = this->_size - pos;
 				amountToConstruct = this->_shiftElements(this->_size + n - 1, pos + amountToMove - 1, n, amountToMove);
-				size_type i_dst = pos + n - 1;
+				difference_type i_dst = pos + n - 1;
 				for (; n > 0; n--)
 				{
 					amountToConstruct = this->_assignElement(amountToConstruct, i_dst, val);
@@ -269,14 +270,14 @@ namespace ft {
 			void		insert (iterator position, InputIterator first, InputIterator last)
 			{
 
-				size_type amountNewElements = ft::distance(first, last);
+				difference_type amountNewElements = ft::distance(first, last);
 				if (amountNewElements == 0)
 					return ;
-				size_type pos = ft::distance(this->begin(), position);
-				size_type amountToMove = this->_size - pos;
-				size_type amountToConstruct = this->_shiftElements(this->_size + amountNewElements - 1,
+				difference_type pos = ft::distance(this->begin(), position);
+				difference_type amountToMove = this->_size - pos;
+				difference_type amountToConstruct = this->_shiftElements(this->_size + amountNewElements - 1,
 										pos + amountToMove - 1, amountNewElements, amountToMove);
-				size_type i_dst = pos + amountNewElements - 1;
+				difference_type i_dst = pos + amountNewElements - 1;
 				for (; amountNewElements > 0; amountNewElements--)
 				{
 					last--;
@@ -287,21 +288,21 @@ namespace ft {
 
 			iterator	insert (iterator position, const value_type& val)
 			{
-				size_type pos = ft::distance(this->begin(), position);
+				difference_type pos = ft::distance(this->begin(), position);
 				this->insert(position, 1, val);
 				return (this->begin() + pos);
 			}
 
 			iterator	erase (iterator first, iterator last)
 			{
-				size_type amountToErase = ft::distance(first, last);
-				size_type amountToShift = ft::distance(last, this->end());
-				size_type i_dst = ft::distance(this->begin(), first);
-				size_type i_src = ft::distance(this->begin(), last);
+				difference_type amountToErase = ft::distance(first, last);
+				difference_type amountToShift = ft::distance(last, this->end());
+				difference_type i_dst = ft::distance(this->begin(), first);
+				difference_type i_src = ft::distance(this->begin(), last);
 
-				for (size_type i = 0; i < amountToShift; i++)
+				for (difference_type i = 0; i < amountToShift; i++)
 					this->_array[i_dst + i] = this->_array[i_src + i];
-				for (size_type i = 0; i < amountToErase; i++)
+				for (difference_type i = 0; i < amountToErase; i++)
 					this->pop_back();
 				return (first);
 			}

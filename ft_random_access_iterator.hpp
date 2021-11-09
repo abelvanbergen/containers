@@ -6,7 +6,7 @@
 /*   By: avan-ber <avan-ber@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/09/21 09:22:52 by avan-ber      #+#    #+#                 */
-/*   Updated: 2021/11/02 11:21:29 by avan-ber      ########   odam.nl         */
+/*   Updated: 2021/11/08 15:31:20 by avan-ber      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,17 +15,18 @@
 
 # define itr ft::iterator<T, Distance, Pointer, Reference>
 
+# include "type_traits.hpp"
+
 namespace ft {
 	template <class T, class Pointer = T*, class Reference = T&, class Distance = ptrdiff_t>
 	class random_access_iterator
 	{
 		public:
-			typedef T				value_type;
-			typedef Distance  		difference_type;
-			typedef Pointer			pointer;
-			typedef Reference		reference;
-			typedef std::size_t		size_type;
-			// typedef Category		iterator_category;
+			typedef T														value_type;
+			typedef Distance  												difference_type;
+			typedef Pointer													pointer;
+			typedef Reference												reference;
+			typedef random_access_iterator_tag								iterator_category;
 
 		private:
 			pointer	_ptr;
@@ -95,7 +96,7 @@ namespace ft {
 				return random_access_iterator(this->_ptr - n);
 			}
 			// a - b
-			size_type	operator- (random_access_iterator b) // moet difference_type zijn
+			difference_type	operator- (random_access_iterator b)
 			{
 				return (this->_ptr - b._ptr);
 			}
@@ -132,7 +133,7 @@ namespace ft {
 				return *this;
 			}
 			// a[n]
-			value_type&	operator[] (size_type n) //terug veranderen naar distancetype
+			value_type&	operator[] (difference_type n)
 			{
 				return *(this->_ptr + n);
 			}

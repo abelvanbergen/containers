@@ -6,26 +6,28 @@
 /*   By: avan-ber <avan-ber@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/10/18 13:15:26 by avan-ber      #+#    #+#                 */
-/*   Updated: 2021/10/20 11:17:54 by avan-ber      ########   odam.nl         */
+/*   Updated: 2021/11/08 14:55:42 by avan-ber      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef FT_BIDIRECTIONAL_ITERATOR_HPP
 # define FT_BIDIRECTIONAL_ITERATOR_HPP
 
-#include "ft_mapNodes.hpp"
+# include "ft_mapNodes.hpp"
+# include "type_traits.hpp"
 
 namespace ft {
 	template <class T, class Pointer = T*, class Reference = T&, class Distance = ptrdiff_t>
 	class bidirectional_iterator
 	{
 		public:
-			typedef T						value_type;
-			typedef size_t					difference_type;
-			typedef value_type*				pointer;
-			typedef value_type&				reference;
-			typedef ft::mapNode<value_type>	node;
-			typedef node*					node_pointer;
+			typedef T							value_type;
+			typedef size_t						difference_type;
+			typedef value_type*					pointer;
+			typedef value_type&					reference;
+			typedef ft::mapNode<value_type>		node;
+			typedef node*						node_pointer;
+			typedef bidirectional_iterator_tag	iterator_category;
 
 		private:
 			node_pointer	_ptr;

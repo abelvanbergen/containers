@@ -5,3 +5,10 @@ nog naar kijken:
 
 AVL:
 	de sentinals staan los van
+
+
+plan van aanpak verwijderen node 2 kinderen:
+	zoek welke node hem zal vervangen, en zet die op NULL
+	zet de parent and childs in de nieuwe node om
+	zet de parent en childs van de oude node naar de nieuwe nood
+	verwijder de oude nood

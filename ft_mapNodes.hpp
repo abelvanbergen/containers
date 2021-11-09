@@ -6,12 +6,14 @@
 /*   By: avan-ber <avan-ber@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/10/13 09:21:19 by avan-ber      #+#    #+#                 */
-/*   Updated: 2021/10/28 11:48:07 by avan-ber      ########   odam.nl         */
+/*   Updated: 2021/11/09 08:52:34 by avan-ber      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef FT_MAPNODES_HPP
 # define FT_MAPNODES_HPP
+
+# include "ft_utils.hpp"
 
 namespace ft {
 	template <class T>
@@ -27,7 +29,7 @@ namespace ft {
 			int			height;
 
 		private:
-			mapNode*	_next()
+			mapNode*	_next ()
 			{
 				mapNode* temp;
 				if (this == this->lastSentinel)
@@ -56,7 +58,7 @@ namespace ft {
 				return (temp);
 			}
 
-			mapNode*	_prev()
+			mapNode*	_prev ()
 			{
 				mapNode* temp;
 				if (this == this->firstSentinel)
@@ -91,7 +93,15 @@ namespace ft {
 			///////////////////////
 
 			// a++
-			mapNode	operator++(int)
+			void	swap (mapNode& x)
+			{
+				ft::swap(this->left, x.left);
+				ft::swap(this->right, x.right);
+				ft::swap(this->parent, x.parent);
+				ft::swap(this->height, x.height);
+			}
+
+			mapNode	operator++ (int)
 			{
 				mapNode old = *this;
 
@@ -99,14 +109,14 @@ namespace ft {
 				return (old);
 			}
 			// ++a
-			mapNode&	operator++()
+			mapNode&	operator++ ()
 			{
 				this->_next();
 				return *this;
 			}
 
 			// a--
-			mapNode	operator--(int)
+			mapNode	operator-- (int)
 			{
 				mapNode old = *this;
 
@@ -114,7 +124,7 @@ namespace ft {
 				return (old);
 			}
 			// --a
-			mapNode&	operator--()
+			mapNode&	operator-- ()
 			{
 				this->prev();
 				return *this;
