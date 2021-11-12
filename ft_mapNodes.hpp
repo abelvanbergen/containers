@@ -6,7 +6,7 @@
 /*   By: avan-ber <avan-ber@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/10/13 09:21:19 by avan-ber      #+#    #+#                 */
-/*   Updated: 2021/11/10 14:44:02 by avan-ber      ########   odam.nl         */
+/*   Updated: 2021/11/12 13:52:50 by avan-ber      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ namespace ft {
 			typedef mapNode<T>											node;
 			typedef node*												node_pointer;
 
-		private:
+		public:
 			mapNode*	_next ()
 			{
 				mapNode* temp;

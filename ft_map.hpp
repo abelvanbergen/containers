@@ -6,7 +6,7 @@
 /*   By: avan-ber <avan-ber@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/10/12 09:13:43 by avan-ber      #+#    #+#                 */
-/*   Updated: 2021/11/12 09:29:54 by avan-ber      ########   odam.nl         */
+/*   Updated: 2021/11/12 13:53:41 by avan-ber      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -274,8 +274,8 @@ namespace ft {
 			// Iterators //
 			///////////////
 
-			iterator begin() { return iterator((this->_firstSentinel++)); }
-			const_iterator begin() const { return const_iterator((this->_firstSentinel++)); }
+			iterator begin() { return iterator(this->_firstSentinel->_next()); }
+			const_iterator begin() const { return const_iterator(this->_firstSentinel->_next()); }
 			iterator end() {return iterator(&this->_lastSentinel); }
 			const_iterator end() const {return const_iterator(&this->_lastSentinel); }
 			// reverse_iterator rbegin();
