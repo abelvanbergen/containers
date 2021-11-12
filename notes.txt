@@ -12,3 +12,7 @@ plan van aanpak verwijderen node 2 kinderen:
 	zet de parent and childs in de nieuwe node om
 	zet de parent en childs van de oude node naar de nieuwe nood
 	verwijder de oude nood
+
+
+aka 'mapNode<pair<const int, std::__1::basic_string<char> > > *'
+aka 'mapNode<const ft::pair<const int, std::__1::basic_string<char> > > *'

@@ -6,7 +6,7 @@
 /*   By: avan-ber <avan-ber@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/10/12 09:13:43 by avan-ber      #+#    #+#                 */
-/*   Updated: 2021/11/09 14:45:08 by avan-ber      ########   odam.nl         */
+/*   Updated: 2021/11/12 09:29:54 by avan-ber      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,11 @@ namespace ft {
 			typedef typename iterator_traits<iterator>::difference_type	difference_type;
 			typedef typename allocator_type::size_type					size_type;
 
+		private:
+			typedef mapNode<value_type>									node;
+			typedef node*												node_pointer;
+			typedef typename Alloc::template rebind<node>::other		node_alloc;
+
 		public:
 			class value_compare
 			{
@@ -58,13 +63,8 @@ namespace ft {
 			};
 
 		private:
-			typedef mapNode<value_type>									node;
-			typedef node*												node_pointer;
-			typedef typename Alloc::template rebind<node>::other		node_alloc;
-
-		private:
-			node					_firstSentinel;
-			node					_lastSentinel;
+			node_pointer			_firstSentinel;
+			node_pointer			_lastSentinel;
 			node_pointer			_root;
 			size_type				_size;
 			key_compare				_compare;
@@ -171,13 +171,11 @@ namespace ft {
 
 				this->_alloc.construct(newNode, value);
 				newNode->parent = parent;
-				newNode->firstSentinel = &this->_firstSentinel;
-				newNode->lastSentinel = &this->_lastSentinel;
+				newNode->firstSentinel = this->_firstSentinel;
+				newNode->lastSentinel = this->_lastSentinel;
 				this->_size++;
 				return(newNode);
 			}
-
-			void	_changeNeighbours()
 
 			void	_deleteNode (node_pointer root)
 			{
@@ -199,9 +197,9 @@ namespace ft {
 				}
 				else
 				{
-					temp = this->_getNodeToReplace(root->right);
-					root.swap(temp);								//key is const dus dit kan niet, ik moet dus zorgen dat ie hem wel goed verwijderd
-					root->right = _deleteFromTree(root->right, temp->data);
+					temp = this->_minValueNode(root->right);
+					root->swap(*temp);
+					temp->right = _deleteFromTree(temp->right, root->data);
 				}
 			}
 
@@ -248,20 +246,6 @@ namespace ft {
 				return this->_height(N->left) - this->_height(N->right);
 			}
 
-			node_pointer	_getNodeToReplace(node_pointer N)
-			{
-				node_pointer current = N;
-				while (current->left != NULL)
-					current = current->left;
-				if (current->parent->left == this)
-					current->parent->left = current->right;
-				else
-					current->parent->right = current->right;
-				if (current->right != NULL)
-					current->right->parent = current->parent;
-				return current;
-			}
-
 			node_pointer	_minValueNode(node_pointer N)
 			{
 				node_pointer	current = N;
@@ -275,14 +259,14 @@ namespace ft {
 				N->height = max(this->_height(N->left), this->_height(N->right)) + 1;
 			}
 
-			void	_setSentinelInfoConstruct()
+			void	_setSentinelInfoConstruct() //moet deze vaker geupdate wordden als de root veranderd
 			{
-				this->_firstSentinel.firstSentinel = &this->_firstSentinel;
-				this->_firstSentinel.lastSentinel = & this->_lastSentinel;
-				this->_lastSentinel.firstSentinel = &this->_firstSentinel;
-				this->_lastSentinel.lastSentinel = & this->_lastSentinel;
-				this->_firstSentinel.parent = this->_root;
-				this->_lastSentinel.parent = this->_root;
+				this->_firstSentinel->firstSentinel = this->_firstSentinel;
+				this->_firstSentinel->lastSentinel = this->_lastSentinel;
+				this->_lastSentinel->firstSentinel = this->_firstSentinel;
+				this->_lastSentinel->lastSentinel = this->_lastSentinel;
+				this->_firstSentinel->parent = this->_root;
+				this->_lastSentinel->parent = this->_root;
 			}
 		public:
 
@@ -290,10 +274,10 @@ namespace ft {
 			// Iterators //
 			///////////////
 
-			iterator begin() {return iterator(this->_firstSentinel->parent); }
-			const_iterator begin() const {return iterator(this->_firstSentinel->parent); }
-			iterator end() {return iterator(this->_lastSentinel); }
-			const_iterator end() const {return iterator(this->_lastSentinel); }
+			iterator begin() { return iterator((this->_firstSentinel++)); }
+			const_iterator begin() const { return const_iterator((this->_firstSentinel++)); }
+			iterator end() {return iterator(&this->_lastSentinel); }
+			const_iterator end() const {return const_iterator(&this->_lastSentinel); }
 			// reverse_iterator rbegin();
 			// const_reverse_iterator rbegin() const;
 			// reverse_iterator rend();
@@ -317,7 +301,7 @@ namespace ft {
 			///////////////
 			// modifiers //
 			///////////////
-			pair<iterator,bool>	insert (const value_type& val)
+			ft::pair<iterator,bool>	insert (const value_type& val)
 			{
 				size_type oldsize = this->_size;
 				this->_root = insertNewNode(this->_root, val);
@@ -464,12 +448,12 @@ namespace ft {
 				return (c_itr);
 			}
 
-			pair<iterator,iterator>	equal_range (const key_type& k)
+			ft::pair<iterator,iterator>	equal_range (const key_type& k)
 			{
 				return make_pair(this->lower_bound(k), this->upper_bound(k));
 			}
 
-			pair<const_iterator,const_iterator>	equal_range (const key_type& k) const
+			ft::pair<const_iterator,const_iterator>	equal_range (const key_type& k) const
 			{
 				return make_pair(this->lower_bound(k), this->upper_bound(k));
 			}
@@ -489,7 +473,7 @@ namespace ft {
 				if (this->_root != NULL)
 					this->clear();
 				this->_compare = x._compare;
-				this->_alloc = x._alloc;
+				this->_valueCompare = x._valueCompare;
 				this->insert(x.begin(), x.end());
 				return *this;
 			}
@@ -505,13 +489,13 @@ namespace ft {
 			}
 
 			template <class InputIterator>
-			map (InputIterator first, InputIterator last, const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()) : _size(0), _compare(comp), _valueCompare(comp), _alloc(alloc)
+			map (InputIterator first, InputIterator last, const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()) : _root(NULL), _size(0), _compare(comp), _valueCompare(comp), _alloc(alloc)
 			{
 				this->_setSentinelInfoConstruct();
 				this->insert(first, last);
 			}
 
-			explicit map (const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()) : _size(0), _compare(comp), _valueCompare(comp), _alloc(alloc)
+			explicit map (const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()) : _root(NULL), _size(0), _compare(comp), _valueCompare(comp), _alloc(alloc)
 			{
 				this->_setSentinelInfoConstruct();
 				return ;
