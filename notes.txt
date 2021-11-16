@@ -14,5 +14,8 @@ plan van aanpak verwijderen node 2 kinderen:
 	verwijder de oude nood
 
 
-aka 'mapNode<pair<const int, std::__1::basic_string<char> > > *'
-aka 'mapNode<const ft::pair<const int, std::__1::basic_string<char> > > *'
+multiple overloads of 'operator bidirectional_iterator' instantiate to the same signature
+      'ft::bidirectional_iterator<const ft::pair<const int, std::__1::basic_string<char> >, const ft::pair<const int,
+      std::__1::basic_string<char> > *, const ft::pair<const int, std::__1::basic_string<char> > &, long>::const_iterator () const' (aka
+      'bidirectional_iterator<const ft::pair<const int, std::__1::basic_string<char> >, const ft::pair<const int, std::__1::basic_string<char>
+      > *, const ft::pair<const int, std::__1::basic_string<char> > &> () const')

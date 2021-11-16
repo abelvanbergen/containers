@@ -6,7 +6,7 @@
 /*   By: avan-ber <avan-ber@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/10/18 13:15:26 by avan-ber      #+#    #+#                 */
-/*   Updated: 2021/11/11 08:42:54 by avan-ber      ########   odam.nl         */
+/*   Updated: 2021/11/16 14:28:58 by avan-ber      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,8 +29,8 @@ namespace ft {
 			typedef node*											node_pointer;
 			typedef bidirectional_iterator_tag						iterator_category;
 
-			typedef	bidirectional_iterator <T, T*, T&>				iterator;
-			typedef bidirectional_iterator <T, const T*, const T&>	const_iterator;
+			typedef	ft::bidirectional_iterator <T, T*, T&>				iterator;
+			typedef ft::bidirectional_iterator <T, const T*, const T&>	const_iterator;
 
 		private:
 			node_pointer	_ptr;
@@ -38,12 +38,12 @@ namespace ft {
 		public:
 			reference	operator* (void)
 			{
-				return (this->data);
+				return (this->_ptr->data);
 			}
 
 			pointer	operator->(void)
 			{
-				return (this->data);
+				return (this->_ptr->data);
 			}
 
 			// a++
@@ -103,20 +103,23 @@ namespace ft {
 				return (const_iterator(this->_ptr));
 			}
 
-			// template <class T, class Pointer = T*, class Reference = T&, class Distance = ptrdiff_t>
-			// friend bool	bidirectional::operator== (const bidirectional& lhs, const bidirectional& rhs);
+			template <class bidirectional>
+			friend bool	operator== (const bidirectional& lhs, const bidirectional& rhs);
+			
+			template <class bidirectional>
+			friend bool	operator!= (const bidirectional& lhs, const bidirectional& rhs);
 	}; //end bidirectional iterator class
 
-	// template <class bidirectional>
-	// bool	bidirectional::operator== (const bidirectional& lhs, const bidirectional& rhs)
-	// {
-	// 	return (lhs == rhs);
-	// }
-	// template <class bidirectional>
-	// bool	bidirectional::operator!= (const bidirectional& lhs, const bidirectional& rhs)
-	// {
-	// 	return !(lhs == rhs);
-	// }
+	template <class bidirectional>
+	bool	operator== (const bidirectional& lhs, const bidirectional& rhs)
+	{
+		return (lhs == rhs);
+	}
+	template <class bidirectional>
+	bool	operator!= (const bidirectional& lhs, const bidirectional& rhs)
+	{
+		return !(lhs == rhs);
+	}
 } //end namespace
 
 #endif

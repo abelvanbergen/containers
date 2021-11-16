@@ -6,7 +6,7 @@
 /*   By: avan-ber <avan-ber@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/10/12 09:13:43 by avan-ber      #+#    #+#                 */
-/*   Updated: 2021/11/12 13:53:41 by avan-ber      ########   odam.nl         */
+/*   Updated: 2021/11/16 14:44:52 by avan-ber      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,19 +29,19 @@ namespace ft {
 		// typedefs //
 		//////////////
 		public:
-			typedef Key													key_type;
-			typedef T													mapped_type;
-			typedef ft::pair<const key_type, mapped_type>				value_type;
-			typedef Compare												key_compare;
-			typedef Alloc												allocator_type;
-			typedef value_type&											reference;
-			typedef const value_type&									const_reference;
-			typedef value_type*											pointer;
-			typedef	const value_type*									const_pointer;
-			typedef bidirectional_iterator<value_type>					iterator;
-			typedef bidirectional_iterator<const value_type>			const_iterator;
-			typedef typename iterator_traits<iterator>::difference_type	difference_type;
-			typedef typename allocator_type::size_type					size_type;
+			typedef Key																	key_type;
+			typedef T																	mapped_type;
+			typedef ft::pair<const key_type, mapped_type>								value_type;
+			typedef Compare																key_compare;
+			typedef Alloc																allocator_type;
+			typedef value_type&															reference;
+			typedef const value_type&													const_reference;
+			typedef value_type*															pointer;
+			typedef	const value_type*													const_pointer;
+			typedef bidirectional_iterator<value_type>									iterator;
+			typedef bidirectional_iterator<value_type, const_pointer, const_reference>	const_iterator;
+			typedef typename iterator_traits<iterator>::difference_type					difference_type;
+			typedef typename allocator_type::size_type									size_type;
 
 		private:
 			typedef mapNode<value_type>									node;
@@ -113,16 +113,16 @@ namespace ft {
 			node_pointer	_balanceForInsertion(node_pointer root, const value_type& value)
 			{
 				int balance = _getBalance(root);
-				if (balance > 1 && this->_valueCompare()(value, root->left->data))
+				if (balance > 1 && this->_valueCompare(value, root->left->data))
 					return this->_rightRotate(root);
-				if (balance < -1 && this->_valueCompare()(root->left->data, value))
+				if (balance < -1 && this->_valueCompare(root->left->data, value))
 					return this->_leftRotate(root);
-				if (balance > 1 && this->_valueCompare()(root->left->data, value)) //Left Right Case
+				if (balance > 1 && this->_valueCompare(root->left->data, value)) //Left Right Case
 				{
 					root->left = this->_leftRotate(root->left);
 					return this->_rightRotate(root);
 				}
-				if (balance < -1 && this->_valueCompare()(value, root->left->data)) //Right Left Case
+				if (balance < -1 && this->_valueCompare(value, root->left->data)) //Right Left Case
 				{
 					root->right = this->_rightRotate(root);
 					return this->_leftRotate(root);
@@ -150,14 +150,14 @@ namespace ft {
 				return root;
 			}
 
-			node_pointer	_insertNewNode(node_pointer root, const value_type& value)
+			node_pointer	_insertNewNode(node_pointer root, const value_type& value, node_pointer parent)
 			{
 				if (!root)
-					return (this->_newNode());
-				if (this->_valueCompare()(value, root->data))
-					root->left = _insertNewNode(root->left, value);
-				else if (this->_valueCompare()(root->data, value))
-					root->right = _insertNewNode(root->right, value);
+					return (this->_newNode(value, parent));
+				if (this->_valueCompare(value, root->data))
+					root->left = _insertNewNode(root->left, value, root);
+				else if (this->_valueCompare(root->data, value))
+					root->right = _insertNewNode(root->right, value, root);
 				else
 					return (root);
 				this->_updateHeight(root);
@@ -275,9 +275,9 @@ namespace ft {
 			///////////////
 
 			iterator begin() { return iterator(this->_firstSentinel->_next()); }
-			const_iterator begin() const { return const_iterator(this->_firstSentinel->_next()); }
-			iterator end() {return iterator(&this->_lastSentinel); }
-			const_iterator end() const {return const_iterator(&this->_lastSentinel); }
+			const_iterator begin() const { return const_iterator((this->_firstSentinel->_next())); }
+			iterator end() {return iterator(this->_lastSentinel); }
+			const_iterator end() const {return const_iterator(this->_lastSentinel); }
 			// reverse_iterator rbegin();
 			// const_reverse_iterator rbegin() const;
 			// reverse_iterator rend();
@@ -304,9 +304,9 @@ namespace ft {
 			ft::pair<iterator,bool>	insert (const value_type& val)
 			{
 				size_type oldsize = this->_size;
-				this->_root = insertNewNode(this->_root, val);
+				this->_root = _insertNewNode(this->_root, val, NULL);
 				iterator itr = find(val.first);
-				return (make_pair(itr, this->_size > oldsize));
+				return (ft::make_pair(itr, this->_size > oldsize));
 			}
 
 			iterator	insert (iterator position, const value_type& val)
@@ -321,7 +321,7 @@ namespace ft {
 			void				insert (InputIterator first, InputIterator last)
 			{
 				for(; first != last; first++)
-					insert(first.data);
+					insert(*first);
 			}
 
 			void		erase (iterator position)
@@ -393,11 +393,11 @@ namespace ft {
 			{
 				if (node->data.first == k)
 					return iterator(node);
-				if (node->left == NULL && this->_comp(k, node->data.first))
+				if (node->left == NULL && this->_compare(k, node->data.first))
 					return this->end();
-				if (node->right == NULL && this->_comp(node->data.first, k))
+				if (node->right == NULL && this->_compare(node->data.first, k))
 					return this->end();
-				if (this->_comp(k, node->data.first))
+				if (this->_compare(k, node->data.first))
 					return _find(node->left, k);
 				else
 					return _find(node->right, k);
