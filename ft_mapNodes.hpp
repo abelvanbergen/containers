@@ -6,7 +6,7 @@
 /*   By: avan-ber <avan-ber@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/10/13 09:21:19 by avan-ber      #+#    #+#                 */
-/*   Updated: 2021/11/12 13:52:50 by avan-ber      ########   odam.nl         */
+/*   Updated: 2021/11/19 11:26:09 by avan-ber      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,41 +19,49 @@ namespace ft {
 	template <class T>
 	struct mapNode
 	{
-		public:
-			T			data;
-			mapNode*	left;
-			mapNode*	right;
-			mapNode*	parent;
-			mapNode*	firstSentinel;
-			mapNode*	lastSentinel;
-			int			height;
-
 		private:
 			typedef mapNode<T>											node;
 			typedef node*												node_pointer;
 
 		public:
-			mapNode*	_next ()
+			T				data;
+			node_pointer	left;
+			node_pointer	right;
+			node_pointer	parent;
+			node_pointer	firstSentinel;
+			node_pointer	lastSentinel;
+			int				height;
+
+		public:
+			node_pointer	_next () const
 			{
-				mapNode* temp;
-				if (this == this->lastSentinel)
-					return (0);
-				if (this == this->firstSentinel)
+				//make a temp so you cab look trough the tree
+				node_pointer temp = const_cast<node_pointer>(this);
+				//if you are already at the end
+				if (temp == temp->lastSentinel)
+					return (NULL);
+				//if you are at the beginning
+				if (temp == temp->firstSentinel)
 				{
-					temp = this->parent;
+					//if the tree is empty
+					if (temp->parent == NULL)
+						return(temp->lastSentinel);
+					temp = temp->parent;
 					while (temp->left != NULL)
 						temp = temp->left;
 				}
-				else if (this->right != NULL)
+				//if you can go right
+				else if (temp->right != NULL)
 				{
-					temp = this->right;
+					temp = temp->right;
 					while (temp->left != NULL)
 						temp = temp->left;
 				}
+				//no right child to go to, so you have to go up.
+				//This means it can also be the "last" node and then you have to to the lastSentinel
 				else
 				{
-					temp = this;
-					while(temp->parent == NULL && temp->parent->right == temp)
+					while(temp->parent != NULL && temp->parent->right == temp)
 						temp = temp->parent;
 					temp = temp->parent;
 					if (temp == NULL)
@@ -62,27 +70,35 @@ namespace ft {
 				return (temp);
 			}
 
-			mapNode*	_prev ()
+			node_pointer	_prev () const
 			{
-				mapNode* temp;
-				if (this == this->firstSentinel)
-					return (0);
-				if (this == this->lastSentinel)
+				//make a temp so you cab look trough the tree
+				node_pointer temp = const_cast<node_pointer>(this);
+				//if you are already at the begin
+				if (temp == temp->firstSentinel)
+					return (NULL);
+				//if you are at the end
+				if (temp == temp->lastSentinel)
 				{
-					temp = this->parent;
+					//if the tree is empty
+					if (temp->parent == NULL)
+						return(temp->firstSentinel);
+					temp = temp->parent;
 					while (temp->left != NULL)
 						temp = temp->left;
 				}
-				if (this->left != NULL)
+				//if ypu still have a left child to go to
+				if (temp->left != NULL)
 				{
-					temp = this->left;
+					temp = temp->left;
 					while (temp->right != NULL)
 						temp = temp->right;
 				}
+				//no left child to go to, so you have to go up.
+				//This means it can also be the "first" node and then you have to to the firstSentinel
 				else
 				{
-					temp = this;
-					while(temp->parent == NULL && temp->parent->left == temp)
+					while(temp->parent != NULL && temp->parent->left == temp)
 						temp = temp->parent;
 					temp = temp->parent;
 					if (temp == NULL)
@@ -154,40 +170,6 @@ namespace ft {
 			}
 			
 		public:
-			///////////////////////
-			// operator overload //
-			///////////////////////
-
-			// a++
-			mapNode	operator++ (int)
-			{
-				mapNode old = *this;
-
-				this->_next();
-				return (old);
-			}
-			// ++a
-			mapNode&	operator++ ()
-			{
-				this->_next();
-				return *this;
-			}
-
-			// a--
-			mapNode	operator-- (int)
-			{
-				mapNode old = *this;
-
-				this->prev();
-				return (old);
-			}
-			// --a
-			mapNode&	operator-- ()
-			{
-				this->prev();
-				return *this;
-			}
-
 			/////////////////////////
 			// assignment operator //
 			/////////////////////////

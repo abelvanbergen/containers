@@ -6,7 +6,7 @@
 /*   By: avan-ber <avan-ber@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/10/18 13:15:26 by avan-ber      #+#    #+#                 */
-/*   Updated: 2021/11/16 14:28:58 by avan-ber      ########   odam.nl         */
+/*   Updated: 2021/11/19 18:06:09 by avan-ber      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ namespace ft {
 
 			pointer	operator->(void)
 			{
-				return (this->_ptr->data);
+				return (&this->_ptr->data);
 			}
 
 			// a++
@@ -51,13 +51,13 @@ namespace ft {
 			{
 				bidirectional_iterator old = *this;
 
-				this->_ptr++;
+				this->_ptr = this->_ptr->_next();
 				return (old);
 			}
 			// ++a
 			bidirectional_iterator&	operator++()
 			{
-				this->_ptr++;
+				this->_ptr = this->_ptr->_next();
 				return *this;
 			}
 
@@ -66,19 +66,19 @@ namespace ft {
 			{
 				bidirectional_iterator old = *this;
 
-				this->_ptr--;
+				this->_ptr = this->_ptr->_prev();
 				return (old);
 			}
 			// --a
 			bidirectional_iterator&	operator--()
 			{
-				this->_ptr--;
+				this->_ptr = this->_ptr->_prev();
 				return *this;
 			}
 
 			bidirectional_iterator&	operator= (const bidirectional_iterator& srcs)
 			{
-				this->ptr = srcs._ptr;
+				this->_ptr = srcs._ptr;
 				return *this;
 			}
 
@@ -113,7 +113,7 @@ namespace ft {
 	template <class bidirectional>
 	bool	operator== (const bidirectional& lhs, const bidirectional& rhs)
 	{
-		return (lhs == rhs);
+		return (lhs._ptr == rhs._ptr);
 	}
 	template <class bidirectional>
 	bool	operator!= (const bidirectional& lhs, const bidirectional& rhs)

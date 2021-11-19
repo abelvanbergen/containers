@@ -14,8 +14,14 @@ plan van aanpak verwijderen node 2 kinderen:
 	verwijder de oude nood
 
 
-multiple overloads of 'operator bidirectional_iterator' instantiate to the same signature
-      'ft::bidirectional_iterator<const ft::pair<const int, std::__1::basic_string<char> >, const ft::pair<const int,
-      std::__1::basic_string<char> > *, const ft::pair<const int, std::__1::basic_string<char> > &, long>::const_iterator () const' (aka
-      'bidirectional_iterator<const ft::pair<const int, std::__1::basic_string<char> >, const ft::pair<const int, std::__1::basic_string<char>
-      > *, const ft::pair<const int, std::__1::basic_string<char> > &> () const')
+no matching conversion for functional-style
+      cast from 'const ft::map<int, std::__1::basic_string<char>,
+      std::__1::less<int>, std::__1::allocator<ft::pair<const int,
+      std::__1::basic_string<char> > > >::node *' (aka 'const
+      mapNode<pair<const int, std::__1::basic_string<char> > > *') to
+      'ft::map<int, std::__1::basic_string<char>, std::__1::less<int>,
+      std::__1::allocator<ft::pair<const int, std::__1::basic_string<char>
+      > > >::const_iterator' (aka 'bidirectional_iterator<pair<const int,
+      std::__1::basic_string<char> >, const pair<const int,
+      std::__1::basic_string<char> > *, const pair<const int,
+      std::__1::basic_string<char> > &>')
