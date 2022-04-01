@@ -6,7 +6,7 @@
 /*   By: avan-ber <avan-ber@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/10/18 13:15:26 by avan-ber      #+#    #+#                 */
-/*   Updated: 2021/11/19 18:06:09 by avan-ber      ########   odam.nl         */
+/*   Updated: 2022/04/01 17:15:09 by avan-ber      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,13 +28,11 @@ namespace ft {
 			typedef ft::mapNode<value_type>							node;
 			typedef node*											node_pointer;
 			typedef bidirectional_iterator_tag						iterator_category;
-
-			typedef	ft::bidirectional_iterator <T, T*, T&>				iterator;
+	
 			typedef ft::bidirectional_iterator <T, const T*, const T&>	const_iterator;
 
 		private:
 			node_pointer	_ptr;
-
 		public:
 			reference	operator* (void)
 			{
@@ -93,11 +91,6 @@ namespace ft {
 			~bidirectional_iterator (void){ return ;}
 
 		public:
-			operator iterator() const
-			{
-				return (iterator(this->_ptr));
-			}
-
 			operator const_iterator() const
 			{
 				return (const_iterator(this->_ptr));

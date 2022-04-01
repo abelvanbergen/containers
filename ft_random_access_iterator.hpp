@@ -6,7 +6,7 @@
 /*   By: avan-ber <avan-ber@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/09/21 09:22:52 by avan-ber      #+#    #+#                 */
-/*   Updated: 2021/11/08 15:31:20 by avan-ber      ########   odam.nl         */
+/*   Updated: 2022/03/31 15:26:08 by avan-ber      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,8 @@ namespace ft {
 			typedef Pointer													pointer;
 			typedef Reference												reference;
 			typedef random_access_iterator_tag								iterator_category;
+
+			typedef ft::random_access_iterator <T, const T*, const T&>		const_iterator;
 
 		private:
 			pointer	_ptr;
@@ -138,6 +140,11 @@ namespace ft {
 				return *(this->_ptr + n);
 			}
 
+		public:
+			operator const_iterator() const
+			{
+				return (const_iterator(this->_ptr));
+			}
 	};
 } //end namespace
 

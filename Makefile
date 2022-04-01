@@ -6,7 +6,7 @@
 #    By: avan-ber <avan-ber@student.codam.nl>         +#+                      #
 #                                                    +#+                       #
 #    Created: 2021/10/05 10:29:50 by avan-ber      #+#    #+#                  #
-#    Updated: 2021/11/08 15:34:38 by avan-ber      ########   odam.nl          #
+#    Updated: 2022/01/17 08:37:36 by avan-ber      ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
@@ -26,7 +26,7 @@ test:
 	$(CC) $(C++FLAGS) $(SRCS) -o ft && ./ft > res_ft && $(CC) $(C++FLAGS) $(SRCS) -D STD -o std && ./std > res_std && diff res_std res_ft
 
 teststd:
-	$(CC) $(C++FLAGS) $(SRCS) -D STD -o std && ./std > res_std
+	$(CC) $(C++FLAGS) $(SRCS) -D STD -o std && ./std
 
 testft:
 	$(CC) $(C++FLAGS) $(SRCS) -o ft && ./ft

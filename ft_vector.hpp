@@ -6,7 +6,7 @@
 /*   By: avan-ber <avan-ber@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/09/10 10:59:42 by avan-ber      #+#    #+#                 */
-/*   Updated: 2021/11/08 15:51:42 by avan-ber      ########   odam.nl         */
+/*   Updated: 2022/03/31 15:21:16 by avan-ber      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -142,7 +142,7 @@ namespace ft {
 			{
 				if (n > this->_capacity)
 				{
-					if (n > this->max_size()) // nog even checken of dit echt moet
+					if (n > this->max_size())
 						throw std::length_error("vector [void reserve(size_type n)]");
 					this->_resizeArray(n, this->_size);
 				}
@@ -181,7 +181,7 @@ namespace ft {
 			// nog doen, nog geen iterator
 			//protecten maar dat wil ik nu niet
 			template <class InputIterator>
-			void assign (InputIterator first, InputIterator last)
+			typename ft::enable_if<ft::is_inputiterator<InputIterator>::value, void>::type	assign (InputIterator first, InputIterator last)
 			{
 				this->clear();
 				this->reserve(ft::distance(first, last));
@@ -267,7 +267,7 @@ namespace ft {
 			}
 
 			template <class InputIterator>
-			void		insert (iterator position, InputIterator first, InputIterator last)
+			typename ft::enable_if<ft::is_inputiterator<InputIterator>::value, void>::type	insert (iterator position, InputIterator first, InputIterator last)
 			{
 
 				difference_type amountNewElements = ft::distance(first, last);
@@ -275,15 +275,16 @@ namespace ft {
 					return ;
 				difference_type pos = ft::distance(this->begin(), position);
 				difference_type amountToMove = this->_size - pos;
-				difference_type amountToConstruct = this->_shiftElements(this->_size + amountNewElements - 1,
-										pos + amountToMove - 1, amountNewElements, amountToMove);
+				difference_type amountToConstruct = this->_shiftElements(this->_size + amountNewElements - 1, pos + amountToMove - 1, amountNewElements, amountToMove);
 				difference_type i_dst = pos + amountNewElements - 1;
+
 				for (; amountNewElements > 0; amountNewElements--)
 				{
 					last--;
 					amountToConstruct = this->_assignElement(amountToConstruct, i_dst, *last);
 					i_dst--;
 				}
+
 			}
 
 			iterator	insert (iterator position, const value_type& val)
@@ -353,7 +354,7 @@ namespace ft {
 			}
 
 			template <class InputIterator>
-			vector (InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type()) : _array(NULL), _capacity(0), _size(0), _alloc(alloc)
+			vector (InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type(), typename ft::enable_if<ft::is_inputiterator<InputIterator>::value>::type* = NULL) : _array(NULL), _capacity(0), _size(0), _alloc(alloc)
 			{
 				this->_resizeArray(ft::distance(first , last), 0);
 				for (; first != last; first++)
@@ -362,7 +363,7 @@ namespace ft {
 
 			explicit vector (const allocator_type& alloc = allocator_type()) : _array(NULL), _capacity(0), _size(0), _alloc(alloc)
 			{
-
+				return ;
 			}
 
 			/////////////////
@@ -379,9 +380,9 @@ namespace ft {
 			}
 	};
 
-	// /////////////////////////
+	///////////////////////////
 	// operator declerations //
-	// /////////////////////////
+	///////////////////////////
 	template< class T, class Alloc >
 	bool	operator==(const ft::vector<T,Alloc>& lhs, const ft::vector<T,Alloc>& rhs)
 	{

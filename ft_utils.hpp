@@ -6,7 +6,7 @@
 /*   By: avan-ber <avan-ber@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/10/11 09:42:42 by avan-ber      #+#    #+#                 */
-/*   Updated: 2021/11/08 15:01:26 by avan-ber      ########   odam.nl         */
+/*   Updated: 2022/03/31 11:25:40 by avan-ber      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,16 +29,16 @@ namespace ft{
 	template <class InputIterator1, class InputIterator2>
 	bool	lexicographical_compare (InputIterator1 first1, InputIterator1 last1, InputIterator2 first2, InputIterator2 last2)
 	{
-		while (first1!=last1)
+		while (first1 != last1)
 		{
-			if (first2==last2 || *first2<*first1)
+			if (first2 == last2 || *first2 < *first1)
 				return false;
-			else if (*first1<*first2)
+			else if (*first1 < *first2)
 				return true;
 			first1++;
 			first2++;
 		}
-		return (first2!=last2);
+		return (first2 != last2);
 	}
 
 	template <class InputIterator1, class InputIterator2>
@@ -54,34 +54,40 @@ namespace ft{
 		return (true);
 	}
 
-	int max (int a, int b) {return (a > b ? a : b); }
+	int max (int a, int b)
+	{
+		if (a > b)
+			return (a);
+		return (b);
+	}
 
 	template <class T>
 	struct less
 	{
-  		bool operator() (const T& x, const T& y) const {return x<y;}
+		bool operator() (const T& x, const T& y) const {return x<y;}
 	};
 
 	template <typename Iterator>
-    typename ft::iterator_traits<Iterator>::difference_type	distance (Iterator pos1, Iterator pos2)
-    {
-        return distance (pos1, pos2, typename ft::iterator_traits<Iterator>::iterator_category()); 
-    }
+	typename ft::iterator_traits<Iterator>::difference_type	distance (Iterator pos1, Iterator pos2)
+	{
+		return distance (pos1, pos2, typename ft::iterator_traits<Iterator>::iterator_category()); 
+	}
 	
 	template <typename RAI>
-    typename ft::iterator_traits<RAI>::difference_type	distance (RAI first_position, RAI second_position, ft::random_access_iterator_tag) 
-    {
-        return second_position - first_position; 
-    }
+	typename ft::iterator_traits<RAI>::difference_type	distance (RAI first_position, RAI second_position, ft::random_access_iterator_tag) 
+	{
+		return second_position - first_position; 
+	}
 
 	template <typename II>
-    typename ft::iterator_traits<II>::difference_type	distance (II first_position, II second_position, ft::input_iterator_tag) 
-    {
-        typename ft::iterator_traits<II>::difference_type diff;
-        for (diff=0; first_position != second_position; ++first_position)
-			diff++;
-        return diff; 
-    }  
+	typename ft::iterator_traits<II>::difference_type	distance (II first_position, II second_position, ft::input_iterator_tag) 
+	{
+		typename ft::iterator_traits<II>::difference_type diff;
+
+		for (diff=0; first_position != second_position; ++first_position)
+				diff++;
+		return diff; 
+	}
 
 } //end namespace
 
