@@ -6,7 +6,7 @@
 /*   By: avan-ber <avan-ber@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/10/11 09:42:42 by avan-ber      #+#    #+#                 */
-/*   Updated: 2022/03/31 11:25:40 by avan-ber      ########   odam.nl         */
+/*   Updated: 2022/04/05 09:44:12 by avan-ber      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ namespace ft{
 	template <class T>
 	struct less
 	{
-		bool operator() (const T& x, const T& y) const {return x<y;}
+		bool operator() (const T& x, const T& y) const {return x < y; }
 	};
 
 	template <typename Iterator>

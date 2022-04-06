@@ -6,7 +6,7 @@
 /*   By: avan-ber <avan-ber@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/09/21 09:22:52 by avan-ber      #+#    #+#                 */
-/*   Updated: 2022/03/31 15:26:08 by avan-ber      ########   odam.nl         */
+/*   Updated: 2022/04/04 19:12:42 by avan-ber      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,13 +85,11 @@ namespace ft {
 				this->_ptr--;
 				return *this;
 			}
-			// *a++, doet ie gwn automatisch toch??
 			// a + n
 			random_access_iterator	operator+ (int n)
 			{
 				return random_access_iterator(this->_ptr + n);
 			}
-			// n + a heel erg speciaal, maar kan daarna gewoon a + n oproepen
 			// a - n
 			random_access_iterator	operator- (int n)
 			{
@@ -146,6 +144,7 @@ namespace ft {
 				return (const_iterator(this->_ptr));
 			}
 	};
+
 } //end namespace
 
 #undef itr

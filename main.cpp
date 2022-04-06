@@ -6,7 +6,7 @@
 /*   By: avan-ber <avan-ber@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/09/29 08:53:50 by avan-ber      #+#    #+#                 */
-/*   Updated: 2022/03/31 15:23:20 by avan-ber      ########   odam.nl         */
+/*   Updated: 2022/04/06 20:23:49 by avan-ber      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,19 +42,19 @@ void	testVInsert();
 void	testVErase();
 void	testVIterator();
 
-// void	testMap();
-// void	testMConstructorsAssignmentOperator();
-// void	testMCapacity();
-// void	testMElementAccess();
-// void	testMInsert();
-// void	testMErase();
-// void	testMClear();
-// void	testMFind();
+void	testMap();
+void	testMConstructorsAssignmentOperator();
+void	testMCapacity();
+void	testMElementAccess();
+void	testMInsert();
+void	testMErase();
+void	testMClear();
+void	testMFind();
 
 int main(void)
 {
-	testVector();
-	// testMap();
+	// testVector();
+	testMap();
 }
 
 void	testVector(void)
@@ -70,16 +70,16 @@ void	testVector(void)
 	testVIterator();
 }
 
-// void	testMap(void)
-// {
-// 	testMConstructorsAssignmentOperator();
-// 	testMCapacity();
-// 	testMElementAccess();
-// 	testMInsert();
-// 	testMErase();
-// 	testMClear();
-// 	testMFind();
-// }
+void	testMap(void)
+{
+	// testMConstructorsAssignmentOperator();
+	// testMCapacity();
+	// testMElementAccess();
+	// testMInsert();
+	testMErase();
+	// testMClear();
+	// testMFind();
+}
 
 template <typename T>
 void	printVector(s::vector<T> &vec)
@@ -106,11 +106,11 @@ void	printValueType(s::pair<T1, T2> toPrint)
 }
 
 template <typename T1, typename T2>
-void printMap(s::map<T1, T2> &map)
+void printMap(const s::map<T1, T2> &map)
 {
     std::cout << "printing map -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-" << std::endl;
 	std::cout << "size: " << map.size() << std::endl;
-	typename s::map<T1,T2>::iterator itr = map.begin();
+	typename s::map<T1,T2>::const_iterator itr = map.begin();
 	for (; itr != map.end(); itr++)
 	{
 		printValueType(*itr);
@@ -438,369 +438,368 @@ void	testVErase()
 
 void	testVIterator()
 {
-	// std::cout << "+-----------------+" << std::endl;
-	// std::cout << "| Vector iterator |" << std::endl;
-	// std::cout << "+-----------------+" << std::endl << std::endl;
+	std::cout << "+-----------------+" << std::endl;
+	std::cout << "| Vector iterator |" << std::endl;
+	std::cout << "+-----------------+" << std::endl << std::endl;
 
-	// s::vector<char> one(1, 'A');
-	// one.push_back('B');
-	// one.push_back('C');
-	// one.push_back('D');
-	// one.push_back('E');
+	s::vector<char> one(1, 'A');
+	one.push_back('B');
+	one.push_back('C');
+	one.push_back('D');
+	one.push_back('E');
 
-	// s::vector<char>::iterator it = one.begin();
-	// for (; it != one.end(); it++)
-	// 	std::cout << *it;
-	// std::cout << std::endl;
-	// it--;
-	// std::cout << *it << std::endl;
-	// s::vector<char>::iterator it2 = one.begin() + 4;
-	// std::cout << (it == it2) << std::endl;
-	// std::cout << (it != it2) << std::endl;
+	s::vector<char>::iterator it = one.begin();
+	for (; it != one.end(); it++)
+		std::cout << *it;
+	std::cout << std::endl;
+	it--;
+	std::cout << *it << std::endl;
+	s::vector<char>::iterator it2 = one.begin() + 4;
+	std::cout << (it == it2) << std::endl;
+	std::cout << (it != it2) << std::endl;
 	s::vector<std::string> vec;
 	vec.push_back("abeltje");
 	vec.push_back("remcopamper");
-	s::vector<std::string>::iterator it = vec.begin();
-	std::cout << it->append("jemoederaandepoeder") << std::endl;
+	s::vector<std::string>::iterator it3 = vec.begin();
+	std::cout << it3->append("jemoederaandepoeder") << std::endl;
 
 	s::vector<std::string> vec2;
 	vec2.push_back("abeltje");
 	vec2.push_back("remcopamper");
-	s::vector<std::string>::const_iterator it2 = vec2.begin();
-	std::cout << *it2 << std::endl;
-	std::cout << it2->data() << std::endl;
+	s::vector<std::string>::const_iterator it4 = vec2.begin();
+	std::cout << *it4 << std::endl;
+	std::cout << it4->data() << std::endl;
 }
 
-// void	testMConstructorsAssignmentOperator()
-// {
-// 	std::cout << "+------------------+" << std::endl;
-// 	std::cout << "| Map constructors |" << std::endl;
-// 	std::cout << "+------------------+" << std::endl << std::endl;
+void	testMConstructorsAssignmentOperator()
+{
+	std::cout << "+------------------+" << std::endl;
+	std::cout << "| Map constructors |" << std::endl;
+	std::cout << "+------------------+" << std::endl << std::endl;
 
-// 	s::map<int, std::string> one;
-// 	s::map<int, std::string> two(one);
-// 	s::map<int, std::string> three(one.begin(), one.end());
-// 	s::map<int, std::string> four;
-// 	printMap(four);
-// 	four[1] = "This";
-// 	printMap(four);
-// 	four[2] = "is";
-// 	printMap(four);
-// 	four[3] = "a";
-// 	printMap(four);
-// 	four[4] = "small";
-// 	printMap(four);
-// 	four[5] = "test";
-// 	printMap(four);
-// 	four[6] = "to";
-// 	printMap(four);
-// 	four[7] = "test";
-// 	printMap(four);
-// 	four[8] = "the";
-// 	printMap(four);
-// 	four[9] = "constructors";
-// 	printMap(four);
-// 	s::map<int, std::string> five(four);
-// 	s::map<int, std::string> six(five.begin(), five.end());
-// 	printMap(one);
-// 	printMap(two);
-// 	printMap(three);
-// 	printMap(four);
-// 	printMap(five);
-// 	printMap(six);
-// 	std::cout << std::endl << std::endl << std::endl;
-// 	std::cout << "+-------------------------+" << std::endl;
-// 	std::cout << "| Map assignment operator |" << std::endl;
-// 	std::cout << "+-------------------------+" << std::endl << std::endl;
+	s::map<int, std::string> one;
+	const s::map<int, std::string> two(one);
+	s::map<int, std::string> three(one.begin(), one.end());
+	s::map<int, std::string> four;
+	printMap(four);
+	four[1] = "This";
+	printMap(four);
+	four[2] = "is";
+	printMap(four);
+	four[3] = "a";
+	printMap(four);
+	four[4] = "small";
+	printMap(four);
+	four[5] = "test";
+	printMap(four);
+	four[6] = "to";
+	printMap(four);
+	four[7] = "test";
+	printMap(four);
+	four[8] = "the";
+	printMap(four);
+	four[9] = "constructors";
+	printMap(four);
+	s::map<int, std::string> five(four);
+	s::map<int, std::string> six(five.begin(), five.end());
+	printMap(one);
+	printMap(two);
+	printMap(three);
+	printMap(four);
+	printMap(five);
+	printMap(six);
+	std::cout << std::endl << std::endl << std::endl;
+	std::cout << "+-------------------------+" << std::endl;
+	std::cout << "| Map assignment operator |" << std::endl;
+	std::cout << "+-------------------------+" << std::endl << std::endl;
 
-// 	six = one;
-// 	printMap(one);
-// 	printMap(six);
-// 	one = two;
-// 	two = three;
-// 	printMap(two);
-// 	printMap(three);
-// 	three = four;
-// 	four = five;
-// 	five = six;
-// 	printMap(one);
-// 	printMap(two);
-// 	printMap(three);
-// 	printMap(four);
-// 	printMap(five);
-// 	printMap(six);
-// 	std::cout << std::endl << std::endl << std::endl;
-// }
+	six = one;
+	printMap(one);
+	printMap(six);
+	one = two;
+	printMap(two);
+	printMap(three);
+	three = four;
+	four = five;
+	five = six;
+	printMap(one);
+	printMap(two);
+	printMap(three);
+	printMap(four);
+	printMap(five);
+	printMap(six);
+	std::cout << std::endl << std::endl << std::endl;
+}
 
-// void	testMCapacity()
-// {
-// 	std::cout << "+--------------+" << std::endl;
-// 	std::cout << "| Map capacity |" << std::endl;
-// 	std::cout << "+--------------+" << std::endl << std::endl;
+void	testMCapacity()
+{
+	std::cout << "+--------------+" << std::endl;
+	std::cout << "| Map capacity |" << std::endl;
+	std::cout << "+--------------+" << std::endl << std::endl;
 	
-// 	s::map<int, char> one;
-// 	std::cout << "size: " << one.size() << "	empty: " << (one.empty() ? "True" : "False") << std::endl;
-// 	one[10] = 'A';
-// 	std::cout << "size: " << one.size() << "	empty: " << (one.empty() ? "True" : "False") << std::endl;
-// 	std::cout << std::endl << std::endl << std::endl;
-// }
+	s::map<int, char> one;
+	std::cout << "size: " << one.size() << "	empty: " << (one.empty() ? "True" : "False") << std::endl;
+	one[10] = 'A';
+	std::cout << "size: " << one.size() << "	empty: " << (one.empty() ? "True" : "False") << std::endl;
+	std::cout << std::endl << std::endl << std::endl;
+}
 
-// void	testMElementAccess()
-// {
-// 	std::cout << "+--------------------+" << std::endl;
-// 	std::cout << "| Map element access |" << std::endl;
-// 	std::cout << "+--------------------+" << std::endl << std::endl;
+void	testMElementAccess()
+{
+	std::cout << "+--------------------+" << std::endl;
+	std::cout << "| Map element access |" << std::endl;
+	std::cout << "+--------------------+" << std::endl << std::endl;
 
-// 	s::map<int, char> one;
-// 	one[10] = 'A';
-// 	std::cout << one.size() << one.empty() << std::endl;
-// 	one[20] = 'B';
-// 	std::cout << one.size() << one.empty() << std::endl;
-// 	one[10] = 'C';
-// 	std::cout << one.size() << one.empty() << std::endl;
-// 	one[30] = 'D';
-// 	std::cout << one.size() << one.empty() << std::endl;
-// 	one[0] = 'E';
-// 	std::cout << one.size() << one.empty() << std::endl;
-// 	one[-10] = 'F';
-// 	std::cout << one.size() << one.empty() << std::endl;
-// 	one[30] = 'Z';
-// 	std::cout << one.size() << one.empty() << std::endl;
-// 	std::cout << std::endl << std::endl << std::endl;
-// }
+	s::map<int, char> one;
+	one[10] = 'A';
+	std::cout << one.size() << one.empty() << std::endl;
+	one[20] = 'B';
+	std::cout << one.size() << one.empty() << std::endl;
+	one[10] = 'C';
+	std::cout << one.size() << one.empty() << std::endl;
+	one[30] = 'D';
+	std::cout << one.size() << one.empty() << std::endl;
+	one[0] = 'E';
+	std::cout << one.size() << one.empty() << std::endl;
+	one[-10] = 'F';
+	std::cout << one.size() << one.empty() << std::endl;
+	one[30] = 'Z';
+	std::cout << one.size() << one.empty() << std::endl;
+	std::cout << std::endl << std::endl << std::endl;
+}
 
-// template  <typename T1, typename T2>
-// void	printInsertReturn(s::pair<T1, T2> toPrint)
-// {
-// 	printValueType(*(toPrint.first));
-// 	std::cout << "new Element inserted: " << (toPrint.second ? "True" : "False") << std::endl;
-// }
+template  <typename T1, typename T2>
+void	printInsertReturn(s::pair<T1, T2> toPrint)
+{
+	printValueType(*(toPrint.first));
+	std::cout << "new Element inserted: " << (toPrint.second ? "True" : "False") << std::endl;
+}
 
-// void	testMInsert()
-// {
-// 	std::cout << "+------------+" << std::endl;
-// 	std::cout << "| Map insert |" << std::endl;
-// 	std::cout << "+------------+" << std::endl << std::endl;
+void	testMInsert()
+{
+	std::cout << "+------------+" << std::endl;
+	std::cout << "| Map insert |" << std::endl;
+	std::cout << "+------------+" << std::endl << std::endl;
 	
-// 	s::map<int, char> one;
-// 	s::map<int, char> two;
-// 	s::pair<s::map<int, char>::iterator, bool> ret;
+	s::map<int, char> one;
+	s::map<int, char> two;
+	s::pair<s::map<int, char>::iterator, bool> ret;
 	
-// 	ret = one.insert(s::pair<int, char>(10, 'A'));
-// 	printInsertReturn(ret);
-// 	printMap(one);
-// 	ret = one.insert(s::pair<int, char>(10, 'F'));
-// 	printInsertReturn(ret);
-// 	printMap(one);
-// 	ret = one.insert(s::pair<int, char>(20, 'B'));
-// 	printInsertReturn(ret);
-// 	for (s::map<int, char>::iterator itr = ret.first; itr != one.end(); itr++)
-// 		printValueType(*itr);
-// 	printMap(one);
-// 	ret = one.insert(s::pair<int, char>(30, 'B'));
-// 	printInsertReturn(ret);
-// 	for (s::map<int, char>::iterator itr = ret.first; itr != one.end(); itr++)
-// 		printValueType(*itr);
-// 	printMap(one);
-// 	ret = one.insert(s::pair<int, char>(40, 'B'));
-// 	printInsertReturn(ret);
-// 	for (s::map<int, char>::iterator itr = ret.first; itr != one.end(); itr++)
-// 		printValueType(*itr);
-// 	printMap(one);
-// 	ret = one.insert(s::pair<int, char>(-20, 'B'));
-// 	printInsertReturn(ret);
-// 	for (s::map<int, char>::iterator itr = ret.first; itr != one.end(); itr++)
-// 		printValueType(*itr);
-// 	printMap(one);
-// 	ret = one.insert(s::pair<int, char>(30, 'D'));
-// 	printInsertReturn(ret);
-// 	for (s::map<int, char>::iterator itr = ret.first; itr != one.end(); itr++)
-// 		printValueType(*itr);
-// 	printMap(one);
-// 	std::cout << std::endl << std::endl << std::endl;
-// 	two[110] = 'A';
-// 	two[120] = 'B';
-// 	two[130] = 'C';
-// 	two[140] = 'D';
-// 	two[150] = 'E';
-// 	two[160] = 'F';
-// 	printMap(two);
-// 	two.insert(two.begin(), two.end());
-// 	printMap(two);
-// 	two.insert(one.begin(), one.begin());
-// 	printMap(two);
-// 	two.insert(one.begin(), one.begin()++);
-// 	printMap(two);
-// 	two.insert(one.begin(), one.end());
-// 	printMap(two);
-// 	std::cout << std::endl << std::endl << std::endl;
-// 	s::map<int, char>::iterator itr;
-// 	itr = two.insert(two.begin(), s::pair<int, char>(210, 'Z'));
-// 	printValueType(*itr);
-// 	printMap(two);
-// 	itr = two.insert(two.begin(), s::pair<int, char>(220, 'P'));
-// 	printValueType(*itr);
-// 	printMap(two);
-// 	itr = two.insert(two.begin(), s::pair<int, char>(0, 'O'));
-// 	printValueType(*itr);
-// 	printMap(two);
-// 	itr = two.insert(two.begin(), s::pair<int, char>(-20, 'D'));
-// 	printValueType(*itr);
-// 	printMap(two);
-// 	itr = two.insert(two.begin(), s::pair<int, char>(210, 'Z'));
-// 	printValueType(*itr);
-// 	printMap(two);
-// 	std::cout << std::endl << std::endl << std::endl;
-// }
+	ret = one.insert(s::pair<int, char>(10, 'A'));
+	printInsertReturn(ret);
+	printMap(one);
+	ret = one.insert(s::pair<int, char>(10, 'F'));
+	printInsertReturn(ret);
+	printMap(one);
+	ret = one.insert(s::pair<int, char>(20, 'B'));
+	printInsertReturn(ret);
+	for (s::map<int, char>::iterator itr = ret.first; itr != one.end(); itr++)
+		printValueType(*itr);
+	printMap(one);
+	ret = one.insert(s::pair<int, char>(30, 'B'));
+	printInsertReturn(ret);
+	for (s::map<int, char>::iterator itr = ret.first; itr != one.end(); itr++)
+		printValueType(*itr);
+	printMap(one);
+	ret = one.insert(s::pair<int, char>(40, 'B'));
+	printInsertReturn(ret);
+	for (s::map<int, char>::iterator itr = ret.first; itr != one.end(); itr++)
+		printValueType(*itr);
+	printMap(one);
+	ret = one.insert(s::pair<int, char>(-20, 'B'));
+	printInsertReturn(ret);
+	for (s::map<int, char>::iterator itr = ret.first; itr != one.end(); itr++)
+		printValueType(*itr);
+	printMap(one);
+	ret = one.insert(s::pair<int, char>(30, 'D'));
+	printInsertReturn(ret);
+	for (s::map<int, char>::iterator itr = ret.first; itr != one.end(); itr++)
+		printValueType(*itr);
+	printMap(one);
+	std::cout << std::endl << std::endl << std::endl;
+	two[110] = 'A';
+	two[120] = 'B';
+	two[130] = 'C';
+	two[140] = 'D';
+	two[150] = 'E';
+	two[160] = 'F';
+	printMap(two);
+	two.insert(two.begin(), two.end());
+	printMap(two);
+	two.insert(one.begin(), one.begin());
+	printMap(two);
+	two.insert(one.begin(), one.begin()++);
+	printMap(two);
+	two.insert(one.begin(), one.end());
+	printMap(two);
+	std::cout << std::endl << std::endl << std::endl;
+	s::map<int, char>::iterator itr;
+	itr = two.insert(two.begin(), s::pair<int, char>(210, 'Z'));
+	printValueType(*itr);
+	printMap(two);
+	itr = two.insert(two.begin(), s::pair<int, char>(220, 'P'));
+	printValueType(*itr);
+	printMap(two);
+	itr = two.insert(two.begin(), s::pair<int, char>(0, 'O'));
+	printValueType(*itr);
+	printMap(two);
+	itr = two.insert(two.begin(), s::pair<int, char>(-20, 'D'));
+	printValueType(*itr);
+	printMap(two);
+	itr = two.insert(two.begin(), s::pair<int, char>(210, 'Z'));
+	printValueType(*itr);
+	printMap(two);
+	std::cout << std::endl << std::endl << std::endl;
+}
 
-// void	testMErase()
-// {
-// 	std::cout << "+-----------+" << std::endl;
-// 	std::cout << "| Map erase |" << std::endl;
-// 	std::cout << "+-----------+" << std::endl << std::endl;
+void	testMErase()
+{
+	std::cout << "+-----------+" << std::endl;
+	std::cout << "| Map erase |" << std::endl;
+	std::cout << "+-----------+" << std::endl << std::endl;
 	
-// 	s::map<int, char> one;
-// 	one[10] = 'A';
-// 	one[20] = 'B';
-// 	one[30] = 'C';
-// 	one[40] = 'D';
-// 	one[50] = 'E';
-// 	one[60] = 'F';
-// 	one[70] = 'G';
-// 	one[75] = 'H';
-// 	one[80] = 'I';
-// 	one[90] = 'J';
-// 	printMap(one);
-// 	one.erase(one.begin());
-// 	printMap(one);
-// 	s::map<int, char>::iterator end = one.begin();
-// 	for (int i = 0; i < 5 ; i++)
-// 		end++;
-// 	one.erase(end);
-// 	printMap(one);
-// 	std::cout << std::endl << std::endl << std::endl;
-// 	one.erase(30);
-// 	printMap(one);
-// 	one.erase(90);
-// 	printMap(one);
-// 	one.erase(0);
-// 	printMap(one);
-// 	std::cout << std::endl << std::endl << std::endl;
-// 	one.erase(one.begin(), one.begin());
-// 	printMap(one);
-// 	one.erase(one.begin(), one.begin()++);
-// 	printMap(one);
-// 	one.erase(one.begin()++, (one.begin()++)++);
-// 	printMap(one);
-// 	one.erase(one.begin(), one.end());
-// 	printMap(one);
-// 	std::cout << std::endl << std::endl << std::endl;
-// }
+	s::map<int, char> one;
+	one[10] = 'A';
+	one[20] = 'B';
+	one[30] = 'C';
+	one[40] = 'D';
+	one[50] = 'E';
+	one[60] = 'F';
+	one[70] = 'G';
+	one[75] = 'H';
+	one[80] = 'I';
+	one[90] = 'J';
+	printMap(one);
+	one.erase(one.begin());
+	printMap(one);
+	s::map<int, char>::iterator end = one.begin();
+	for (int i = 0; i < 5 ; i++)
+		end++;
+	one.erase(end);
+	printMap(one);
+	std::cout << std::endl << std::endl << std::endl;
+	one.erase(30);
+	printMap(one);
+	std::cout << one.erase(90) <<std::endl;
+	printMap(one);
+	one.erase(0);
+	printMap(one);
+	std::cout << std::endl << std::endl << std::endl;
+	one.erase(one.begin(), one.begin());
+	printMap(one);
+	one.erase(one.begin(), one.begin()++);
+	printMap(one);
+	one.erase(one.begin()++, (one.begin()++)++);
+	printMap(one);
+	one.erase(one.begin(), one.end());
+	printMap(one);
+	// std::cout << std::endl << std::endl << std::endl;
+}
 
-// void	testMClear(void)
-// {
-// 	std::cout << "+-----------+" << std::endl;
-// 	std::cout << "| Map clear |" << std::endl;
-// 	std::cout << "+-----------+" << std::endl << std::endl;
+void	testMClear(void)
+{
+	std::cout << "+-----------+" << std::endl;
+	std::cout << "| Map clear |" << std::endl;
+	std::cout << "+-----------+" << std::endl << std::endl;
 	
-// 	s::map<int, char> one;
-// 	s::map<int, char> two;
-// 	one[10] = 'A';
-// 	one[20] = 'B';
-// 	one[30] = 'C';
-// 	one[40] = 'D';
-// 	one[50] = 'E';
-// 	one[60] = 'F';
-// 	one[70] = 'G';
-// 	one[75] = 'H';
-// 	one[80] = 'I';
-// 	one[90] = 'J';
-// 	printMap(one);
-// 	one.clear();
-// 	printMap(one);
-// 	printMap(two);
-// 	two.clear();
-// 	printMap(two);
-// 	std::cout << std::endl << std::endl << std::endl;
-// }
+	s::map<int, char> one;
+	s::map<int, char> two;
+	one[10] = 'A';
+	one[20] = 'B';
+	one[30] = 'C';
+	one[40] = 'D';
+	one[50] = 'E';
+	one[60] = 'F';
+	one[70] = 'G';
+	one[75] = 'H';
+	one[80] = 'I';
+	one[90] = 'J';
+	printMap(one);
+	one.clear();
+	printMap(one);
+	printMap(two);
+	two.clear();
+	printMap(two);
+	std::cout << std::endl << std::endl << std::endl;
+}
 
-// void	testMFind()
-// {
-// 	std::cout << "+-----------------+" << std::endl;
-// 	std::cout << "| Map find, count |" << std::endl;
-// 	std::cout << "+-----------------+" << std::endl << std::endl;
+void	testMFind()
+{
+	std::cout << "+-----------------+" << std::endl;
+	std::cout << "| Map find, count |" << std::endl;
+	std::cout << "+-----------------+" << std::endl << std::endl;
 	
-// 	s::map<int, char> one;
-// 	s::map<int, char>::iterator ret;
-// 	one[10] = 'A';
-// 	one[20] = 'B';
-// 	one[30] = 'C';
-// 	one[40] = 'D';
-// 	one[50] = 'E';
-// 	one[60] = 'F';
-// 	one[70] = 'G';
-// 	one[75] = 'H';
-// 	one[80] = 'I';
-// 	one[90] = 'J';
-// 	ret = one.find(10);
-// 	if (ret != one.end())
-// 		printValueType(*ret);
-// 	ret = one.find(60);
-// 	if (ret != one.end())
-// 		printValueType(*ret);
-// 	ret = one.find(90);
-// 	if (ret != one.end())
-// 		printValueType(*ret);
-// 	ret = one.find(0);
-// 	if (ret != one.end())
-// 		printValueType(*ret);
-// 	ret = one.find(65);
-// 	if (ret != one.end())
-// 		printValueType(*ret);
-// 	ret = one.find(100);
-// 	if (ret != one.end())
-// 		printValueType(*ret);
-// 	std::cout << std::endl << std::endl << std::endl;
-// 	std::cout << one.count(10) << std::endl;
-// 	std::cout << one.count(60) << std::endl;
-// 	std::cout << one.count(90) << std::endl;
-// 	std::cout << one.count(65) << std::endl;
-// 	std::cout << one.count(10) << std::endl;
-// 	std::cout << std::endl << std::endl << std::endl;
-// 	ret = one.lower_bound(9);
-// 	for (; ret != one.end(); ret++)
-// 		printValueType(*ret);
-// 	ret = one.upper_bound(9);
-// 	for (; ret != one.end(); ret++)
-// 		printValueType(*ret);
-// 	ret = one.lower_bound(10);
-// 	for (; ret != one.end(); ret++)
-// 		printValueType(*ret);
-// 	ret = one.upper_bound(10);
-// 	for (; ret != one.end(); ret++)
-// 		printValueType(*ret);
-// 	ret = one.lower_bound(11);
-// 	for (; ret != one.end(); ret++)
-// 		printValueType(*ret);
-// 	ret = one.upper_bound(11);
-// 	for (; ret != one.end(); ret++)
-// 		printValueType(*ret);
-// 	ret = one.lower_bound(72);
-// 	for (; ret != one.end(); ret++)
-// 		printValueType(*ret);
-// 	ret = one.upper_bound(72);
-// 	for (; ret != one.end(); ret++)
-// 		printValueType(*ret);
-// 	ret = one.lower_bound(90);
-// 	for (; ret != one.end(); ret++)
-// 		printValueType(*ret);
-// 	ret = one.upper_bound(90);
-// 	for (; ret != one.end(); ret++)
-// 		printValueType(*ret);
-// 	ret = one.lower_bound(100);
-// 	for (; ret != one.end(); ret++)
-// 		printValueType(*ret);
-// 	ret = one.upper_bound(100);
-// 	for (; ret != one.end(); ret++)
-// 		printValueType(*ret);
-// }
+	s::map<int, char> one;
+	s::map<int, char>::iterator ret;
+	one[10] = 'A';
+	one[20] = 'B';
+	one[30] = 'C';
+	one[40] = 'D';
+	one[50] = 'E';
+	one[60] = 'F';
+	one[70] = 'G';
+	one[75] = 'H';
+	one[80] = 'I';
+	one[90] = 'J';
+	ret = one.find(10);
+	if (ret != one.end())
+		printValueType(*ret);
+	ret = one.find(60);
+	if (ret != one.end())
+		printValueType(*ret);
+	ret = one.find(90);
+	if (ret != one.end())
+		printValueType(*ret);
+	ret = one.find(0);
+	if (ret != one.end())
+		printValueType(*ret);
+	ret = one.find(65);
+	if (ret != one.end())
+		printValueType(*ret);
+	ret = one.find(100);
+	if (ret != one.end())
+		printValueType(*ret);
+	std::cout << std::endl << std::endl << std::endl;
+	std::cout << one.count(10) << std::endl;
+	std::cout << one.count(60) << std::endl;
+	std::cout << one.count(90) << std::endl;
+	std::cout << one.count(65) << std::endl;
+	std::cout << one.count(10) << std::endl;
+	std::cout << std::endl << std::endl << std::endl;
+	ret = one.lower_bound(9);
+	for (; ret != one.end(); ret++)
+		printValueType(*ret);
+	ret = one.upper_bound(9);
+	for (; ret != one.end(); ret++)
+		printValueType(*ret);
+	ret = one.lower_bound(10);
+	for (; ret != one.end(); ret++)
+		printValueType(*ret);
+	ret = one.upper_bound(10);
+	for (; ret != one.end(); ret++)
+		printValueType(*ret);
+	ret = one.lower_bound(11);
+	for (; ret != one.end(); ret++)
+		printValueType(*ret);
+	ret = one.upper_bound(11);
+	for (; ret != one.end(); ret++)
+		printValueType(*ret);
+	ret = one.lower_bound(72);
+	for (; ret != one.end(); ret++)
+		printValueType(*ret);
+	ret = one.upper_bound(72);
+	for (; ret != one.end(); ret++)
+		printValueType(*ret);
+	ret = one.lower_bound(90);
+	for (; ret != one.end(); ret++)
+		printValueType(*ret);
+	ret = one.upper_bound(90);
+	for (; ret != one.end(); ret++)
+		printValueType(*ret);
+	ret = one.lower_bound(100);
+	for (; ret != one.end(); ret++)
+		printValueType(*ret);
+	ret = one.upper_bound(100);
+	for (; ret != one.end(); ret++)
+		printValueType(*ret);
+}

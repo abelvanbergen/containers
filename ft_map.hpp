@@ -6,7 +6,7 @@
 /*   By: avan-ber <avan-ber@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/10/12 09:13:43 by avan-ber      #+#    #+#                 */
-/*   Updated: 2021/11/19 18:04:49 by avan-ber      ########   odam.nl         */
+/*   Updated: 2022/04/06 20:24:48 by avan-ber      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,13 +16,14 @@
 # include <memory>
 # include <exception>
 
-#include "ft_bidirectional_iterator.hpp"
-#include "ft_mapNodes.hpp"
-#include "ft_pair.hpp"
+# include "ft_bidirectional_iterator.hpp"
+# include "ft_reverse_iterator.hpp"
+# include "ft_mapNodes.hpp"
+# include "ft_pair.hpp"
 # include "ft_utils.hpp"
 
 namespace ft {
-	template <class Key, class T, class Compare = std::less<Key>, class Alloc = std::allocator<ft::pair<const Key, T> > >
+	template <class Key, class T, class Compare = std::less<const Key>, class Alloc = std::allocator<ft::pair<const Key, T> > >
 	class map
 	{
 		//////////////
@@ -38,15 +39,17 @@ namespace ft {
 			typedef const value_type&													const_reference;
 			typedef value_type*															pointer;
 			typedef	const value_type*													const_pointer;
-			typedef bidirectional_iterator<value_type>									iterator;
-			typedef bidirectional_iterator<value_type, const_pointer, const_reference>	const_iterator;
-			typedef typename iterator_traits<iterator>::difference_type					difference_type;
 			typedef typename allocator_type::size_type									size_type;
-
 		private:
-			typedef mapNode<value_type>									node;
-			typedef node*												node_pointer;
-			typedef typename Alloc::template rebind<node>::other		node_alloc;
+			typedef mapNode<value_type>													node;
+			typedef node*																node_pointer;
+			typedef typename Alloc::template rebind<node>::other						node_alloc;
+		public:
+			typedef ft::bidirectional_iterator<value_type, node>						iterator;
+			typedef typename iterator::const_iterator									const_iterator;
+			typedef ft::reverse_iterator<iterator>										reverse_iterator;
+			typedef ft::reverse_iterator<const_iterator>								const_reverse_iterator;
+			typedef typename iterator_traits<iterator>::difference_type					difference_type;
 
 		public:
 			class value_compare
@@ -63,8 +66,8 @@ namespace ft {
 			};
 
 		private:
-			node					_firstSentinel;
-			node					_lastSentinel;
+			node_pointer			_firstSentinel;
+			node_pointer			_lastSentinel;
 			node_pointer			_root;
 			size_type				_size;
 			key_compare				_compare;
@@ -177,8 +180,8 @@ namespace ft {
 
 				this->_alloc.construct(newNode, value);
 				newNode->parent = parent;
-				newNode->firstSentinel = &this->_firstSentinel;
-				newNode->lastSentinel = &this->_lastSentinel;
+				newNode->firstSentinel = this->_firstSentinel;
+				newNode->lastSentinel = this->_lastSentinel;
 				this->_size++;
 				return(newNode);
 			}
@@ -271,18 +274,36 @@ namespace ft {
 
 			void	_updateSentinals()
 			{
-				this->_firstSentinel.parent = this->_root;
-				this->_lastSentinel.parent = this->_root;
+				this->_firstSentinel->parent = this->_root;
+				this->_lastSentinel->parent = this->_root;
 			}
 
-			void	_setSentinelInfoConstruct() //moet deze vaker geupdate wordden als de root veranderd, volgensmij nu toegevoegd (_updateSetinels)
+			void	_setSentinelInfoConstruct()
 			{
-				this->_firstSentinel.firstSentinel = &this->_firstSentinel;
-				this->_firstSentinel.lastSentinel = &this->_lastSentinel;
-				this->_lastSentinel.firstSentinel = &this->_firstSentinel;
-				this->_lastSentinel.lastSentinel = &this->_lastSentinel;
-				this->_firstSentinel.parent = this->_root;
-				this->_lastSentinel.parent = this->_root;
+
+				this->_firstSentinel->firstSentinel = this->_firstSentinel;
+				this->_firstSentinel->lastSentinel = this->_lastSentinel;
+				this->_lastSentinel->firstSentinel = this->_firstSentinel;
+				this->_lastSentinel->lastSentinel = this->_lastSentinel;
+				this->_firstSentinel->parent = this->_root;
+				this->_lastSentinel->parent = this->_root;
+			}
+
+			void	_createSentinels()
+			{
+				node_pointer first = this->_alloc.allocate(1);
+				this->_alloc.construct(first, value_type());
+				this->_firstSentinel = first;
+
+				node_pointer last = this->_alloc.allocate(1);
+				this->_alloc.construct(last, value_type());
+				this->_lastSentinel = last;
+			}
+
+			void	_destroySentinels()
+			{
+				this->_deleteNode(this->_firstSentinel);
+				this->_deleteNode(this->_lastSentinel);
 			}
 		public:
 
@@ -290,21 +311,52 @@ namespace ft {
 			// Iterators //
 			///////////////
 
-			iterator begin () { return iterator(this->_firstSentinel._next()); }
-			const_iterator begin () const { return const_iterator((this->_firstSentinel._next())); }
-			iterator end () {return iterator(&this->_lastSentinel); }
-			const_iterator end () const {return const_iterator(const_cast<node_pointer>(&this->_lastSentinel)); }
-			// reverse_iterator rbegin();
-			// const_reverse_iterator rbegin() const;
-			// reverse_iterator rend();
-			// const_reverse_iterator rend() const;
+			iterator begin ()
+			{
+				return iterator(this->_firstSentinel->_next());
+			}
+
+			const_iterator begin () const
+			{
+				return const_iterator(this->_firstSentinel->_next());
+			}
+			
+			iterator end ()
+			{
+				return iterator(this->_lastSentinel); // please leave this here
+			}
+
+			const_iterator end () const
+			{
+				return const_iterator(this->_lastSentinel); // please leave this here
+			}
+			
+			reverse_iterator rbegin()
+			{
+				return reverse_iterator(this->_lastSentinel->_prev());
+			}
+
+			const_reverse_iterator rbegin() const
+			{
+				return const_reverse_iterator(this->_lastSentinel->_prev());
+			}
+			
+			reverse_iterator rend()
+			{
+				return reverse_iterator(this->_firstSentinel);
+			}
+			
+			const_reverse_iterator rend() const
+			{
+				return const_reverse_iterator(this->_firstSentinel);
+			}
 
 			//////////////
 			// Capacity //
 			//////////////
-			bool		empty() const { return (this->_size == 0); }
-			size_type	size() const { return this->_size; }
-			size_type	max_size() const { return this->_alloc.max_size(); }
+			bool		empty () const { return (this->_size == 0); }
+			size_type	size () const { return this->_size; }
+			size_type	max_size () const { return this->_alloc.max_size(); }
 
 			/////////////////////
 			// Element acccess //
@@ -314,7 +366,7 @@ namespace ft {
 				return (*((this->insert(ft::make_pair(k,mapped_type()))).first)).second;
 			}
 
-			void preOrder(node_pointer root)
+			void preOrder (node_pointer root) const
 			{
 				if(root != NULL)
 				{
@@ -324,7 +376,7 @@ namespace ft {
 				}
 			}
 
-			void	printTree()
+			void	printTree () const
 			{
 				this->preOrder(this->_root);
 				std::cout << std::endl;
@@ -350,7 +402,7 @@ namespace ft {
 			}
 
 			template <class InputIterator>
-			void				insert (InputIterator first, InputIterator last)
+			typename ft::enable_if<ft::is_inputiterator<InputIterator>::value, void>::type	insert (InputIterator first, InputIterator last)
 			{
 				for(; first != last; first++)
 					insert(*first);
@@ -358,7 +410,7 @@ namespace ft {
 
 			void		erase (iterator position)
 			{
-				this->_deleteFromTree(this->_root, *position);
+				this->_root = this->_deleteFromTree(this->_root, *position);
 			}
 
 			size_type	erase (const key_type& k)
@@ -372,11 +424,14 @@ namespace ft {
 			
 			void		erase (iterator first, iterator last)
 			{
-				for (; first != last; first++)
+				for (;first != last; first++)
+				{
+					std::cout << "test" << std::endl;
 					this->erase(first);
+				}
 			}
 
-			void	_updateTreeToSentinels(node_pointer root, node_pointer first, node_pointer last)
+			void	_updateTreeToSentinels (node_pointer root, node_pointer first, node_pointer last)
 			{
 				if (root->left)
 					_updateTreeToSentinels(root->left, first, last);
@@ -392,9 +447,9 @@ namespace ft {
 				this->_updateSentinals();
 				x._updateSentinals();
 				if (this->_root)
-					this->_updateTreeToSentinels(&this->_firstSentinel, &this->_lastSentinel);
+					this->_updateTreeToSentinels(this->_firstSentinel, this->_lastSentinel);
 				if (x._root)
-					x._updateTreeToSentinels(&x._firstSentinel, &x._lastSentinel);
+					x._updateTreeToSentinels(x._firstSentinel, x._lastSentinel);
 				ft::swap(this->_size, x._size);
 				ft::swap(this->_compare, x._compare);
 				ft::swap(this->_valueCompare, x._valueCompare);
@@ -413,12 +468,12 @@ namespace ft {
 			// observers //
 			///////////////
 
-			key_compare key_comp() const
+			key_compare key_comp () const
 			{
 				return this->_compare;
 			}
 
-			value_compare value_comp() const
+			value_compare value_comp () const
 			{
 				return (this->_valueCompare);
 			}
@@ -434,25 +489,22 @@ namespace ft {
 				return (1);
 			}
 
-			iterator	_find (node_pointer node, const key_type& k) const
+			const_iterator	_find (node_pointer node, const key_type& k) const
 			{
-				if (node->data.first == k)
-					return iterator(node);
-				if (node->left == NULL && this->_compare(k, node->data.first))
-					return this->end();
-				if (node->right == NULL && this->_compare(node->data.first, k))
+				if (node == NULL)
 					return this->end();
 				if (this->_compare(k, node->data.first))
 					return _find(node->left, k);
-				else
+				if (this->_compare(node->data.first, k))
 					return _find(node->right, k);
+				return iterator(node);
 			}
 
 			iterator	find (const key_type& k)
 			{
 				if (this->_root == NULL)
 					return this->end();
-				return (this->_find(this->_root, k));
+				return (this->_find(this->_root, k).get_ptr());
 			}
 
 			const_iterator	find (const key_type& k) const
@@ -495,12 +547,12 @@ namespace ft {
 
 			ft::pair<iterator,iterator>	equal_range (const key_type& k)
 			{
-				return make_pair(this->lower_bound(k), this->upper_bound(k));
+				return ft::make_pair(this->lower_bound(k), this->upper_bound(k));
 			}
 
 			ft::pair<const_iterator,const_iterator>	equal_range (const key_type& k) const
 			{
-				return make_pair(this->lower_bound(k), this->upper_bound(k));
+				return ft::make_pair(this->lower_bound(k), this->upper_bound(k));
 			}
 
 			///////////////
@@ -528,20 +580,23 @@ namespace ft {
 			//////////////////
 			map (const map& x) : _root(NULL), _size(0), _compare(x._compare),  _valueCompare(x._compare), _alloc(x._alloc)
 			{
+				this->_createSentinels();
 				this->_setSentinelInfoConstruct();
 				*this = x;
 				return ;
 			}
 
 			template <class InputIterator>
-			map (InputIterator first, InputIterator last, const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()) : _root(NULL), _size(0), _compare(comp), _valueCompare(comp), _alloc(alloc)
+			map (InputIterator first, InputIterator last, const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type(), typename ft::enable_if<ft::is_inputiterator<InputIterator>::value>::type* = NULL) : _root(NULL), _size(0), _compare(comp), _valueCompare(comp), _alloc(alloc)
 			{
+				this->_createSentinels();
 				this->_setSentinelInfoConstruct();
 				this->insert(first, last);
 			}
 
 			explicit map (const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()) : _root(NULL), _size(0), _compare(comp), _valueCompare(comp), _alloc(alloc)
 			{
+				this->_createSentinels();
 				this->_setSentinelInfoConstruct();
 				return ;
 			}
@@ -550,12 +605,53 @@ namespace ft {
 			// destructors //
 			/////////////////
 
-			~map()
+			~map ()
 			{
+				this->clear();
+				this->_destroySentinels();
 				return ;
 			}
-
+		
 	}; //end class map
+
+		///////////////////////////
+		// operator declerations //
+		///////////////////////////
+		template<class Key, class T, class Compare, class Alloc>
+		bool	operator== (const ft::map<Key, T, Compare, Alloc>& lhs, const ft::map<Key, T, Compare, Alloc>& rhs)
+		{
+			return (lhs.size() == rhs.size() && ft::equal(lhs.begin(), lhs.end(), rhs.begin()));
+		}
+
+		template<class Key, class T, class Compare, class Alloc>
+		bool	operator!= (const ft::map<Key, T, Compare, Alloc>& lhs, const ft::map<Key, T, Compare, Alloc>& rhs)
+		{
+			return (!(lhs == rhs));
+		}
+
+		template<class Key, class T, class Compare, class Alloc>
+		bool	operator< (const ft::map<Key, T, Compare, Alloc>& lhs, const ft::map<Key, T, Compare, Alloc>& rhs)
+		{
+			return (ft::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end()));
+		}
+
+		template<class Key, class T, class Compare, class Alloc>
+		bool	operator<= (const ft::map<Key, T, Compare, Alloc>& lhs, const ft::map<Key, T, Compare, Alloc>& rhs)
+		{
+			return !(rhs < lhs);
+		}
+
+		template<class Key, class T, class Compare, class Alloc>
+		bool	operator> (const ft::map<Key, T, Compare, Alloc>& lhs, const ft::map<Key, T, Compare, Alloc>& rhs)
+		{
+			return (rhs < lhs);
+		}
+
+		template<class Key, class T, class Compare, class Alloc>
+		bool	operator>= (const ft::map<Key, T, Compare, Alloc>& lhs, const ft::map<Key, T, Compare, Alloc>& rhs)
+		{
+			return !(lhs < rhs);
+		}
 
 } // end namespace
 

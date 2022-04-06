@@ -6,7 +6,7 @@
 /*   By: avan-ber <avan-ber@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/10/18 13:15:26 by avan-ber      #+#    #+#                 */
-/*   Updated: 2022/04/01 17:15:09 by avan-ber      ########   odam.nl         */
+/*   Updated: 2022/04/05 17:43:53 by avan-ber      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 # include "type_traits.hpp"
 
 namespace ft {
-	template <class T, class Pointer = T*, class Reference = T&, class Distance = ptrdiff_t>
+	template <class T, class Node, class Pointer = T*, class Reference = T&, class Distance = ptrdiff_t>
 	class bidirectional_iterator
 	{
 		public:
@@ -25,15 +25,24 @@ namespace ft {
 			typedef size_t											difference_type;
 			typedef value_type*										pointer;
 			typedef value_type&										reference;
-			typedef ft::mapNode<value_type>							node;
-			typedef node*											node_pointer;
+			typedef Node*											node_pointer;
 			typedef bidirectional_iterator_tag						iterator_category;
 	
-			typedef ft::bidirectional_iterator <T, const T*, const T&>	const_iterator;
+			typedef ft::bidirectional_iterator <T, Node, const T*, const T&>	const_iterator;
 
 		private:
 			node_pointer	_ptr;
 		public:
+			bool	operator== (bidirectional_iterator b)
+			{
+				return this->_ptr == b._ptr;
+			}
+			// a != b
+			bool	operator!= (bidirectional_iterator b)
+			{
+				return this->_ptr != b._ptr;
+			}
+			
 			reference	operator* (void)
 			{
 				return (this->_ptr->data);
@@ -86,7 +95,12 @@ namespace ft {
 				return ;
 			}
 
-			bidirectional_iterator (const node_pointer ptr = NULL) : _ptr(ptr) {return ;}
+			node_pointer	get_ptr() const
+			{
+				return (_ptr);
+			}
+
+			bidirectional_iterator (node_pointer ptr = NULL) : _ptr(ptr) {return ;}
 
 			~bidirectional_iterator (void){ return ;}
 
@@ -96,23 +110,7 @@ namespace ft {
 				return (const_iterator(this->_ptr));
 			}
 
-			template <class bidirectional>
-			friend bool	operator== (const bidirectional& lhs, const bidirectional& rhs);
-			
-			template <class bidirectional>
-			friend bool	operator!= (const bidirectional& lhs, const bidirectional& rhs);
 	}; //end bidirectional iterator class
-
-	template <class bidirectional>
-	bool	operator== (const bidirectional& lhs, const bidirectional& rhs)
-	{
-		return (lhs._ptr == rhs._ptr);
-	}
-	template <class bidirectional>
-	bool	operator!= (const bidirectional& lhs, const bidirectional& rhs)
-	{
-		return !(lhs == rhs);
-	}
 } //end namespace
 
 #endif

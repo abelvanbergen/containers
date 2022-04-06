@@ -14,14 +14,20 @@ plan van aanpak verwijderen node 2 kinderen:
 	verwijder de oude nood
 
 
-no matching conversion for functional-style
-      cast from 'const ft::map<int, std::__1::basic_string<char>,
-      std::__1::less<int>, std::__1::allocator<ft::pair<const int,
-      std::__1::basic_string<char> > > >::node *' (aka 'const
-      mapNode<pair<const int, std::__1::basic_string<char> > > *') to
-      'ft::map<int, std::__1::basic_string<char>, std::__1::less<int>,
-      std::__1::allocator<ft::pair<const int, std::__1::basic_string<char>
-      > > >::const_iterator' (aka 'bidirectional_iterator<pair<const int,
-      std::__1::basic_string<char> >, const pair<const int,
-      std::__1::basic_string<char> > *, const pair<const int,
-      std::__1::basic_string<char> > &>')
+no matching conversion for functional-style cast 
+
+from 
+    'const ft::map<int, string<char>, less<int>, allocator<ft::pair<const int, string<char> > > >::node *'
+
+(aka 
+    'const mapNode<pair<const int, string<char> > > *') 
+    
+to
+      'ft::map<int, string<char>, less<int>, allocator<ft::pair<const int, string<char> > > >::const_iterator' 
+      
+(aka 
+    'bidirectional_iterator<
+        ft::pair<const int, string<char> >, 
+        ft::mapNode<ft::pair<const int, string<char> > >, 
+        const ft::pair<const int, string<char> > *, 
+        const ft::pair<const int, string<char> > &>')

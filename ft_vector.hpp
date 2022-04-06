@@ -6,7 +6,7 @@
 /*   By: avan-ber <avan-ber@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/09/10 10:59:42 by avan-ber      #+#    #+#                 */
-/*   Updated: 2022/03/31 15:21:16 by avan-ber      ########   odam.nl         */
+/*   Updated: 2022/04/05 11:20:52 by avan-ber      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 # include <memory>
 # include <exception>
 # include "ft_random_access_iterator.hpp"
+# include "ft_reverse_iterator.hpp"
 # include "ft_utils.hpp"
 # include "type_traits.hpp"
 
@@ -35,6 +36,8 @@ namespace ft {
 			typedef const value_type*									const_pointer;
 			typedef random_access_iterator<T, T*, T&>					iterator;
 			typedef random_access_iterator<T, const T*, const T&>		const_iterator;
+			typedef ft::reverse_iterator<iterator>						reverse_iterator;
+			typedef ft::reverse_iterator<const_iterator>					const_reverse_iterator;
 			typedef typename iterator_traits<iterator>::difference_type	difference_type;
 			typedef typename allocator_type::size_type					size_type;
 
@@ -91,25 +94,25 @@ namespace ft {
 				return (const_iterator(this->_array) + this->_size);
 			}
 
-			// reverse_iterator rbegin()
-			// {
+			reverse_iterator rbegin()
+			{
+				return (reverse_iterator(this->_array) + this->_size - 1);
+			}
 
-			// }
+			const_reverse_iterator rbegin() const
+			{
+				return (const_reverse_iterator(this->_array) + this->_size - 1);
+			}
 
-			// const_reverse_iterator rbegin() const
-			// {
+			reverse_iterator rend()
+			{
+				return (reverse_iterator(this->_array) - 1);
+			}
 
-			// }
-
-			// reverse_iterator rend()
-			// {
-
-			// }
-
-			// const_reverse_iterator rend() const
-			// {
-
-			// }
+			const_reverse_iterator rend() const
+			{
+				return (const_reverse_iterator(this->_array) - 1);
+			}
 			//////////////
 			// Capacity //
 			//////////////
@@ -178,8 +181,6 @@ namespace ft {
 			// modifiers //
 			///////////////
 
-			// nog doen, nog geen iterator
-			//protecten maar dat wil ik nu niet
 			template <class InputIterator>
 			typename ft::enable_if<ft::is_inputiterator<InputIterator>::value, void>::type	assign (InputIterator first, InputIterator last)
 			{
@@ -378,7 +379,7 @@ namespace ft {
 				}
 				return ;
 			}
-	};
+	}; //end vector
 
 	///////////////////////////
 	// operator declerations //
