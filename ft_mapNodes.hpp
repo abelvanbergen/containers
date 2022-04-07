@@ -6,7 +6,7 @@
 /*   By: avan-ber <avan-ber@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/10/13 09:21:19 by avan-ber      #+#    #+#                 */
-/*   Updated: 2021/11/19 11:26:09 by avan-ber      ########   odam.nl         */
+/*   Updated: 2022/04/07 19:33:01 by avan-ber      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ namespace ft {
 		public:
 			node_pointer	_next () const
 			{
-				//make a temp so you cab look trough the tree
+				//make a temp so you can look trough the tree
 				node_pointer temp = const_cast<node_pointer>(this);
 				//if you are already at the end
 				if (temp == temp->lastSentinel)
@@ -111,22 +111,22 @@ namespace ft {
 			// swap functions //
 			////////////////////
 		private:
-			void	 _parentSwap(mapNode& x)
+			void	 _parentSwap(node_pointer x)
 			{
 				node_pointer	xParent;
 
-				xParent = x.parent;
+				xParent = x->parent;
 				if (this->parent != NULL)
 				{
 					if (this->parent->left == this)
-						this->parent->left = &x;
+						this->parent->left = x;
 					else
-						this->parent->right = &x;
+						this->parent->right = x;
 				}
-				x.parent = this->parent;
+				x->parent = this->parent;
 				if (xParent != NULL)
 				{
-					if (xParent->left == &x)
+					if (xParent->left == x)
 						xParent->left = this;
 					else
 						xParent->right = this;
@@ -134,39 +134,39 @@ namespace ft {
 				this->parent = NULL;
 			}
 
-			void	_leftChildSwap(mapNode& x)
+			void	_leftChildSwap(node_pointer x)
 			{
 				node_pointer	xLeft;
 
-				xLeft = x.left;
+				xLeft = x->left;
 				if (this->left != NULL)
-					this->left->parent = &x;
-				x.left = this->parent;
+					this->left->parent = x;
+				x->left = this->parent;
 				if (xLeft != NULL)
 					xLeft->parent = this;
 				this->parent = NULL;
 			}
 
-			void	_rightChildSwap(mapNode& x)
+			void	_rightChildSwap(node_pointer x)
 			{
 				node_pointer	xRight;
 
-				xRight = x.right;
+				xRight = x->right;
 				if (this->right != NULL)
-					this->right->parent = &x;
-				x.right = this->parent;
+					this->right->parent = x;
+				x->right = this->parent;
 				if (xRight != NULL)
 					xRight->parent = this;
 				this->parent = NULL;
 			}
 
 		public:
-			void	swap (mapNode& x)
+			void	swap (node_pointer x)
 			{
 				this->_parentSwap(x);
 				this->_leftChildSwap(x);
 				this->_rightChildSwap(x);
-				ft::swap(this->height, x.height);
+				ft::swap(this->height, x->height);
 			}
 			
 		public:

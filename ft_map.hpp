@@ -6,7 +6,7 @@
 /*   By: avan-ber <avan-ber@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/10/12 09:13:43 by avan-ber      #+#    #+#                 */
-/*   Updated: 2022/04/06 20:24:48 by avan-ber      ########   odam.nl         */
+/*   Updated: 2022/04/07 19:35:51 by avan-ber      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -206,14 +206,14 @@ namespace ft {
 						root = NULL;
 					}
 					else
-						root->swap(*temp);
+						root->swap(temp);
 					this->_deleteNode(temp);
 					return (root);
 				}
 				else
 				{
 					temp = this->_minValueNode(root->right);
-					root->swap(*temp);
+					root->swap(temp);
 					temp->right = _deleteFromTree(temp->right, root->data);
 					return (temp);
 				}
@@ -323,12 +323,12 @@ namespace ft {
 			
 			iterator end ()
 			{
-				return iterator(this->_lastSentinel); // please leave this here
+				return iterator(this->_lastSentinel);
 			}
 
 			const_iterator end () const
 			{
-				return const_iterator(this->_lastSentinel); // please leave this here
+				return const_iterator(this->_lastSentinel);
 			}
 			
 			reverse_iterator rbegin()
@@ -424,10 +424,10 @@ namespace ft {
 			
 			void		erase (iterator first, iterator last)
 			{
-				for (;first != last; first++)
+				while (first != last)
 				{
-					std::cout << "test" << std::endl;
-					this->erase(first);
+					this->printTree();
+					this->erase(first++);
 				}
 			}
 

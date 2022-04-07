@@ -6,7 +6,7 @@
 /*   By: avan-ber <avan-ber@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/09/29 08:53:50 by avan-ber      #+#    #+#                 */
-/*   Updated: 2022/04/06 20:23:49 by avan-ber      ########   odam.nl         */
+/*   Updated: 2022/04/07 19:31:46 by avan-ber      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,7 +116,7 @@ void printMap(const s::map<T1, T2> &map)
 		printValueType(*itr);
 	}
 	std::cout << "---------------------------------------------" << std::endl;
-	// map.printTree();
+	map.printTree();
 	std::cout << "---------------------------------------------" << std::endl << std::endl;
 }
 
@@ -677,10 +677,10 @@ void	testMErase()
 		end++;
 	one.erase(end);
 	printMap(one);
-	std::cout << std::endl << std::endl << std::endl;
+	std::cout << std::endl << std::endl << "erasing 30" << std::endl;
 	one.erase(30);
-	printMap(one);
-	std::cout << one.erase(90) <<std::endl;
+	// printMap(one);
+	// one.erase(90);
 	printMap(one);
 	one.erase(0);
 	printMap(one);
@@ -691,8 +691,8 @@ void	testMErase()
 	printMap(one);
 	one.erase(one.begin()++, (one.begin()++)++);
 	printMap(one);
-	one.erase(one.begin(), one.end());
-	printMap(one);
+	// one.erase(one.begin(), one.end());
+	// printMap(one);
 	// std::cout << std::endl << std::endl << std::endl;
 }
 
