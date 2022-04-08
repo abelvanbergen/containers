@@ -6,7 +6,7 @@
 /*   By: avan-ber <avan-ber@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/10/13 09:21:19 by avan-ber      #+#    #+#                 */
-/*   Updated: 2022/04/07 19:33:01 by avan-ber      ########   odam.nl         */
+/*   Updated: 2022/04/08 20:49:17 by avan-ber      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,11 +38,17 @@ namespace ft {
 				//make a temp so you can look trough the tree
 				node_pointer temp = const_cast<node_pointer>(this);
 				//if you are already at the end
+				std::cout << "print 1" << std::endl;
 				if (temp == temp->lastSentinel)
+				{
+					std::cout << "waarom gebeurd dit?" << std::endl;
 					return (NULL);
+				}
+				std::cout << "heh" << std::endl;
 				//if you are at the beginning
 				if (temp == temp->firstSentinel)
 				{
+					std::cout << "print2" << std::endl;
 					//if the tree is empty
 					if (temp->parent == NULL)
 						return(temp->lastSentinel);
@@ -53,6 +59,7 @@ namespace ft {
 				//if you can go right
 				else if (temp->right != NULL)
 				{
+					std::cout << "print2" << std::endl;
 					temp = temp->right;
 					while (temp->left != NULL)
 						temp = temp->left;
@@ -61,6 +68,7 @@ namespace ft {
 				//This means it can also be the "last" node and then you have to to the lastSentinel
 				else
 				{
+					std::cout << "print3" << std::endl;
 					while(temp->parent != NULL && temp->parent->right == temp)
 						temp = temp->parent;
 					temp = temp->parent;
@@ -131,7 +139,7 @@ namespace ft {
 					else
 						xParent->right = this;
 				}
-				this->parent = NULL;
+				this->parent = xParent;
 			}
 
 			void	_leftChildSwap(node_pointer x)
@@ -141,10 +149,10 @@ namespace ft {
 				xLeft = x->left;
 				if (this->left != NULL)
 					this->left->parent = x;
-				x->left = this->parent;
+				x->left = this->left;
 				if (xLeft != NULL)
 					xLeft->parent = this;
-				this->parent = NULL;
+				this->left = xLeft;
 			}
 
 			void	_rightChildSwap(node_pointer x)
@@ -154,10 +162,10 @@ namespace ft {
 				xRight = x->right;
 				if (this->right != NULL)
 					this->right->parent = x;
-				x->right = this->parent;
+				x->right = this->right;
 				if (xRight != NULL)
 					xRight->parent = this;
-				this->parent = NULL;
+				this->right = xRight;
 			}
 
 		public:

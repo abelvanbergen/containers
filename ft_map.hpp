@@ -6,7 +6,7 @@
 /*   By: avan-ber <avan-ber@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/10/12 09:13:43 by avan-ber      #+#    #+#                 */
-/*   Updated: 2022/04/07 19:35:51 by avan-ber      ########   odam.nl         */
+/*   Updated: 2022/04/08 20:46:39 by avan-ber      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@
 # include "ft_mapNodes.hpp"
 # include "ft_pair.hpp"
 # include "ft_utils.hpp"
+# include <stdlib.h>
 
 namespace ft {
 	template <class Key, class T, class Compare = std::less<const Key>, class Alloc = std::allocator<ft::pair<const Key, T> > >
@@ -110,7 +111,6 @@ namespace ft {
 
 				this->_updateHeight(x);
 				this->_updateHeight(y);
-
 				return y;
 			}
 
@@ -219,16 +219,18 @@ namespace ft {
 				}
 			}
 
-			node_pointer _deleteFromTree(node_pointer root, const value_type& value)
+			node_pointer _deleteFromTree (node_pointer root, const value_type& value)
 			{
 				if (root == NULL)
 					return root;
+				std::cout << "print 1" << std::endl;
 				if (this->_valueCompare(value, root->data))
 					root->left = this->_deleteFromTree(root->left, value);
 				else if (this->_valueCompare(root->data, value))
 					root->right = this->_deleteFromTree(root->right, value);
 				else
 					root = this->_selectDeleteNode(root);
+				std::cout << "print 2" << std::endl;
 				if (root == NULL)
 					return (root);
 				this->_updateHeight(root);
@@ -411,6 +413,7 @@ namespace ft {
 			void		erase (iterator position)
 			{
 				this->_root = this->_deleteFromTree(this->_root, *position);
+				std::cout << "klaar" << std::endl;
 			}
 
 			size_type	erase (const key_type& k)
@@ -424,10 +427,14 @@ namespace ft {
 			
 			void		erase (iterator first, iterator last)
 			{
+				iterator temp;
 				while (first != last)
 				{
-					this->printTree();
-					this->erase(first++);
+					temp = first;
+					std::cout << "begin iterator" << std::endl;
+					first++;
+					std::cout << "node to delete: " << first->first << std::endl;
+					this->erase(temp);
 				}
 			}
 

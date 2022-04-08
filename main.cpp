@@ -6,7 +6,7 @@
 /*   By: avan-ber <avan-ber@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/09/29 08:53:50 by avan-ber      #+#    #+#                 */
-/*   Updated: 2022/04/07 19:31:46 by avan-ber      ########   odam.nl         */
+/*   Updated: 2022/04/08 11:51:57 by avan-ber      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -679,21 +679,21 @@ void	testMErase()
 	printMap(one);
 	std::cout << std::endl << std::endl << "erasing 30" << std::endl;
 	one.erase(30);
-	// printMap(one);
-	// one.erase(90);
+	printMap(one);
+	one.erase(90);
 	printMap(one);
 	one.erase(0);
 	printMap(one);
 	std::cout << std::endl << std::endl << std::endl;
-	one.erase(one.begin(), one.begin());
-	printMap(one);
-	one.erase(one.begin(), one.begin()++);
-	printMap(one);
-	one.erase(one.begin()++, (one.begin()++)++);
-	printMap(one);
-	// one.erase(one.begin(), one.end());
+	// one.erase(one.begin(), one.begin());
 	// printMap(one);
-	// std::cout << std::endl << std::endl << std::endl;
+	// one.erase(one.begin(), one.begin()++);
+	// printMap(one);
+	// one.erase(one.begin()++, (one.begin()++)++);
+	// printMap(one);
+	one.erase(one.begin(), one.end());
+	printMap(one);
+	std::cout << std::endl << std::endl << std::endl;
 }
 
 void	testMClear(void)

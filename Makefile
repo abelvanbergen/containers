@@ -6,7 +6,7 @@
 #    By: avan-ber <avan-ber@student.codam.nl>         +#+                      #
 #                                                    +#+                       #
 #    Created: 2021/10/05 10:29:50 by avan-ber      #+#    #+#                  #
-#    Updated: 2022/04/04 18:02:14 by avan-ber      ########   odam.nl          #
+#    Updated: 2022/04/08 20:20:28 by avan-ber      ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
@@ -29,6 +29,7 @@ teststd:
 	$(CC) $(C++FLAGS) $(SRCS) -D STD -o std && ./std
 
 testft:
+	rm -rf ft
 	$(CC) $(C++FLAGS) $(SRCS) -o ft && ./ft
 
 fclean:
