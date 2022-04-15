@@ -6,17 +6,19 @@
 /*   By: avan-ber <avan-ber@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/10/11 09:42:42 by avan-ber      #+#    #+#                 */
-/*   Updated: 2022/04/05 09:44:12 by avan-ber      ########   odam.nl         */
+/*   Updated: 2022/04/15 21:12:18 by avan-ber      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef FT_UTILS_HPP
 # define FT_UTILS_HPP
 
-# include "type_traits.hpp"
+# include <ft_type_traits.hpp>
 
 namespace ft{
-
+	//////////
+	// swap //
+	//////////
 	template< typename U>
 	void		swap (U& x, U& y)
 	{
@@ -26,6 +28,9 @@ namespace ft{
 		y = swap;
 	}
 
+	/////////////////////////////
+	// Lexicographical compare //
+	/////////////////////////////
 	template <class InputIterator1, class InputIterator2>
 	bool	lexicographical_compare (InputIterator1 first1, InputIterator1 last1, InputIterator2 first2, InputIterator2 last2)
 	{
@@ -41,6 +46,9 @@ namespace ft{
 		return (first2 != last2);
 	}
 
+	///////////
+	// equal //
+	///////////
 	template <class InputIterator1, class InputIterator2>
 	bool	equal(InputIterator1 first1, InputIterator1 last1, InputIterator2 first2)
 	{
@@ -54,6 +62,9 @@ namespace ft{
 		return (true);
 	}
 
+	/////////
+	// max //
+	/////////
 	int max (int a, int b)
 	{
 		if (a > b)
@@ -61,12 +72,21 @@ namespace ft{
 		return (b);
 	}
 
+	//////////
+	// less //
+	//////////
 	template <class T>
 	struct less
 	{
-		bool operator() (const T& x, const T& y) const {return x < y; }
+		bool operator() (const T& x, const T& y) const
+		{
+			return x < y;
+		}
 	};
 
+	//////////////
+	// Distance //
+	//////////////
 	template <typename Iterator>
 	typename ft::iterator_traits<Iterator>::difference_type	distance (Iterator pos1, Iterator pos2)
 	{

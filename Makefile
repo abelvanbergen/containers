@@ -6,34 +6,59 @@
 #    By: avan-ber <avan-ber@student.codam.nl>         +#+                      #
 #                                                    +#+                       #
 #    Created: 2021/10/05 10:29:50 by avan-ber      #+#    #+#                  #
-#    Updated: 2022/04/08 20:20:28 by avan-ber      ########   odam.nl          #
+#    Updated: 2022/04/15 18:27:31 by avan-ber      ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
-NAME = containers
+NAME = 			ft_containers
+STD_NAME =		std_containers
 
-CC = clang++
-C++FLAGS = -Wall -Wextra -Werror -std=c++98 -pedantic -fsanitize=address -g
+CC =			clang++
+FLAGS =			-Wall -Werror -Wextra -std=c++98 -pedantic
 
-INCLUDES =	ft_vector.hpp \
-			ft_iterator.hpp \
-			ft_utils.hpp \
-			ft_random_access_iterator.hpp
+SRC =			main.cpp
+FT_RES =		ft_res.txt
+STD_RES =		std_res.txt
 
-SRCS = main.cpp
 
-test:
-	$(CC) $(C++FLAGS) $(SRCS) -o ft && ./ft > res_ft && $(CC) $(C++FLAGS) $(SRCS) -D STD -o std && ./std > res_std && diff res_std res_ft
+C++FLAGS = -Wall -Wextra -Werror -std=c++98 -pedantic
 
-teststd:
-	$(CC) $(C++FLAGS) $(SRCS) -D STD -o std && ./std
+all: test
 
-testft:
-	rm -rf ft
-	$(CC) $(C++FLAGS) $(SRCS) -o ft && ./ft
+test: $(NAME) $(STD_NAME)
+	./$(NAME) > $(FT_RES)
+	./$(STD_NAME) > $(STD_RES)
+	diff $(FT_RES) $(STD_RES)
 
-fclean:
-	rm -rf res_ft res_std ft std
-re: fclean test
+$(NAME):
+	$(CC) $(C++FLAGS) $(SRC) -I containers -I utils -o $(NAME)
+	
+$(STD_NAME):
+	$(CC) $(C++FLAGS) $(SRC) -D STD -o $(STD_NAME)
 
-.PHONY: fclean re test teststd testft
+testft: ft_fclean $(NAME)
+	./$(NAME)
+
+teststd: std_fclean $(STD_NAME)
+	./$(STD_NAME)
+
+clean:
+	$(RM) $(FT_RES) $(STD_RES)
+
+fclean: clean
+	$(RM) $(NAME) $(STD_NAME)
+
+ft_fclean:
+	$(RM) $(FT_RES) $(NAME)
+
+std_fclean:
+	$(RM) $(STD_RES) $(STD_NAME)
+
+time: $(NAME) $(STD_NAME)
+	time ./$(NAME) > $(FT_RES)
+	time ./$(STD_NAME) > $(STD_RES)
+	diff $(FT_RES) $(STD_RES)
+
+re: fclean all
+
+.PHONY: test teststd testft ft_fclean std_fclean clean fclean re time

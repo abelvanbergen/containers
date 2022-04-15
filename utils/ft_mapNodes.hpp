@@ -6,19 +6,22 @@
 /*   By: avan-ber <avan-ber@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/10/13 09:21:19 by avan-ber      #+#    #+#                 */
-/*   Updated: 2022/04/08 20:49:17 by avan-ber      ########   odam.nl         */
+/*   Updated: 2022/04/15 21:37:15 by avan-ber      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef FT_MAPNODES_HPP
 # define FT_MAPNODES_HPP
 
-# include "ft_utils.hpp"
+# include <ft_utils.hpp>
 
 namespace ft {
 	template <class T>
 	struct mapNode
 	{
+		//////////////
+		// typedefs //
+		//////////////
 		private:
 			typedef mapNode<T>											node;
 			typedef node*												node_pointer;
@@ -33,22 +36,61 @@ namespace ft {
 			int				height;
 
 		public:
+			//////////////////
+			// constructors //
+			//////////////////
+
+			mapNode (const mapNode& srcs)
+			{
+				*this = srcs;
+				return ;
+			}
+
+			mapNode (const T& data = T()) : data(data), left(NULL), right(NULL), parent(NULL), firstSentinel(NULL), lastSentinel(NULL), height(1)
+			{
+				return ;
+			}
+
+			/////////////////////////
+			// assignment operator //
+			/////////////////////////
+			mapNode&	operator= (const mapNode& srcs)
+			{
+				this->data.second = srcs.data.second;
+				this->left = srcs.left;
+				this->right = srcs.right;
+				this->parent = srcs.parent;
+				this->firstSentinel = srcs.firstSentinel;
+				this->lastSentinel = srcs.lastSentinel;
+				this->height = srcs.height;
+				return *this;
+			}
+			
+			/////////////////
+			// destructors //
+			/////////////////
+
+			~mapNode()
+			{
+				return ;
+			}
+
+			///////////
+			// utils //
+			///////////
 			node_pointer	_next () const
 			{
 				//make a temp so you can look trough the tree
 				node_pointer temp = const_cast<node_pointer>(this);
 				//if you are already at the end
-				std::cout << "print 1" << std::endl;
+				
 				if (temp == temp->lastSentinel)
 				{
-					std::cout << "waarom gebeurd dit?" << std::endl;
 					return (NULL);
 				}
-				std::cout << "heh" << std::endl;
 				//if you are at the beginning
 				if (temp == temp->firstSentinel)
 				{
-					std::cout << "print2" << std::endl;
 					//if the tree is empty
 					if (temp->parent == NULL)
 						return(temp->lastSentinel);
@@ -59,7 +101,6 @@ namespace ft {
 				//if you can go right
 				else if (temp->right != NULL)
 				{
-					std::cout << "print2" << std::endl;
 					temp = temp->right;
 					while (temp->left != NULL)
 						temp = temp->left;
@@ -68,7 +109,6 @@ namespace ft {
 				//This means it can also be the "last" node and then you have to to the lastSentinel
 				else
 				{
-					std::cout << "print3" << std::endl;
 					while(temp->parent != NULL && temp->parent->right == temp)
 						temp = temp->parent;
 					temp = temp->parent;
@@ -92,11 +132,11 @@ namespace ft {
 					if (temp->parent == NULL)
 						return(temp->firstSentinel);
 					temp = temp->parent;
-					while (temp->left != NULL)
-						temp = temp->left;
+					while (temp->right != NULL)
+						temp = temp->right;
 				}
 				//if ypu still have a left child to go to
-				if (temp->left != NULL)
+				else if (temp->left != NULL)
 				{
 					temp = temp->left;
 					while (temp->right != NULL)
@@ -176,45 +216,8 @@ namespace ft {
 				this->_rightChildSwap(x);
 				ft::swap(this->height, x->height);
 			}
-			
-		public:
-			/////////////////////////
-			// assignment operator //
-			/////////////////////////
-			mapNode&	operator= (const mapNode& srcs)
-			{
-				this->data.second = srcs.data.second;
-				this->left = srcs.left;
-				this->right = srcs.right;
-				this->parent = srcs.parent;
-				this->firstSentinel = srcs.firstSentinel;
-				this->lastSentinel = srcs.lastSentinel;
-				this->height = srcs.height;
-				return *this;
-			}
 
-			//////////////////
-			// constructors //
-			//////////////////
-
-			mapNode (const mapNode& srcs)
-			{
-				*this = srcs;
-				return ;
-			}
-
-			mapNode (const T& data = T()) : data(data), left(NULL), right(NULL), parent(NULL), firstSentinel(NULL), lastSentinel(NULL), height(1)
-			{
-				return ;
-			}
-
-			/////////////////
-			// destructors //
-			/////////////////
-
-			~mapNode() {return ;}
-
-	};
+	}; //end mapNode struct
 }
 
 #endif

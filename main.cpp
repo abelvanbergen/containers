@@ -6,29 +6,30 @@
 /*   By: avan-ber <avan-ber@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/09/29 08:53:50 by avan-ber      #+#    #+#                 */
-/*   Updated: 2022/04/08 11:51:57 by avan-ber      ########   odam.nl         */
+/*   Updated: 2022/04/15 18:52:54 by avan-ber      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
-
 
 //Nog toe te voegen:
 //	-map::swap
 //	-map::equal_range
-//	-map::iterators
-//	-vector::iterators
 
-#include <vector>
+
+#include <deque>
 #include <string>
 #include <iostream>
 #include <exception>
-#include <map>
-#include "ft_vector.hpp"
-#include "ft_map.hpp"
 
 #ifdef STD
-#define s std
+	#define s std
+	#include <vector>
+	#include <map>
+	#include <stack>
 #else
-#define s ft
+	#define s ft
+	#include <ft_vector.hpp>
+	#include <ft_map.hpp>
+	#include <ft_stack.hpp>
 #endif
 
 void	testVector();
@@ -41,6 +42,10 @@ void	testVAssign();
 void	testVInsert();
 void	testVErase();
 void	testVIterator();
+void	testVMoreIterator();
+void	testVIteratorOperators();
+void	testVNonMemberFunctions();
+void	testVstresstest();
 
 void	testMap();
 void	testMConstructorsAssignmentOperator();
@@ -50,11 +55,22 @@ void	testMInsert();
 void	testMErase();
 void	testMClear();
 void	testMFind();
+void	testMIteratorFunctions();
+void	TestMIteratorOperators();
+void	testMstresstest();
+
+void	testStack();
+void	testSConstructors();
+void	testS();
+
+void	test_is_integral();
 
 int main(void)
 {
-	// testVector();
+	testVector();
 	testMap();
+	testStack();
+	test_is_integral();
 }
 
 void	testVector(void)
@@ -68,17 +84,30 @@ void	testVector(void)
 	testVInsert();
 	testVErase();
 	testVIterator();
+	testVMoreIterator();
+	testVIteratorOperators();
+	testVNonMemberFunctions();
+	testVstresstest();
 }
 
 void	testMap(void)
 {
-	// testMConstructorsAssignmentOperator();
-	// testMCapacity();
-	// testMElementAccess();
-	// testMInsert();
+	testMConstructorsAssignmentOperator();
+	testMCapacity();
+	testMElementAccess();
+	testMInsert();
 	testMErase();
-	// testMClear();
-	// testMFind();
+	testMClear();
+	testMFind();
+	testMIteratorFunctions();
+	TestMIteratorOperators();
+	testMstresstest();
+}
+
+void	testStack()
+{
+	testSConstructors();
+	testS();
 }
 
 template <typename T>
@@ -116,8 +145,15 @@ void printMap(const s::map<T1, T2> &map)
 		printValueType(*itr);
 	}
 	std::cout << "---------------------------------------------" << std::endl;
-	map.printTree();
+	// map.printTree();
 	std::cout << "---------------------------------------------" << std::endl << std::endl;
+}
+
+template <typename T>
+void	printStack(s::stack<T> &stack)
+{
+	std::cout << "printing stack -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-" << std::endl;
+	std::cout << "size: " << stack.size() << "	top:" << stack.top() << std::endl;
 }
 
 void	testVConstructors()
@@ -471,6 +507,160 @@ void	testVIterator()
 	std::cout << it4->data() << std::endl;
 }
 
+void	testVMoreIterator()
+{
+	std::cout << "+----------------------+" << std::endl;
+	std::cout << "| Vector more iterator |" << std::endl;
+	std::cout << "+----------------------+" << std::endl << std::endl;
+	s::vector<int>							vec;
+	s::vector<int>::iterator				it;
+	s::vector<int>::const_iterator			cit;
+	s::vector<int>::reverse_iterator		rit;
+	s::vector<int>::const_reverse_iterator	crit;
+
+	for (size_t i = 0; i < 15; i++)
+		vec.push_back(i);
+
+	it = vec.begin();
+	cit = vec.begin();
+	rit = vec.rbegin();
+	crit = vec.rbegin();
+	std::cout << "Begin: " << *it << std::endl;
+	std::cout << "Const begin: " << *cit << std::endl;
+	std::cout << "Reverse begin: " << *rit << std::endl;
+	std::cout << "Const reverse begin: " << *crit << std::endl;
+	
+	it = vec.end() - 1;
+	cit = vec.end() - 1;
+	rit = vec.rend() - 1;
+	crit = vec.rend() - 1;
+	std::cout << "End: " << *it << std::endl;
+	std::cout << "Const end: " << *cit << std::endl;
+	std::cout << "Reverse end: " << *rit << std::endl;
+	std::cout << "Const reverse end: " << *crit << std::endl;
+	printVector(vec);
+}
+
+void	testVIteratorOperators()
+{
+	std::cout << "+---------------------------+" << std::endl;
+	std::cout << "| Vector iterator operators |" << std::endl;
+	std::cout << "+---------------------------+" << std::endl << std::endl;
+	s::vector<std::string>							vec;
+	s::vector<std::string>::iterator				it;
+	s::vector<std::string>::const_iterator			cit;
+	s::vector<std::string>::reverse_iterator		rit;
+	s::vector<std::string>::const_reverse_iterator	crit;
+
+	vec.push_back("I would like to express my appreciation to Ingmar and Remco.");
+	vec.push_back("Besides being awesome people and friends they helped me a lot with ft_containers.");
+	vec.push_back("Ingmar is a expert in iterators and every container itself.");
+	vec.push_back("He explained traits like a champ and could solve all my compile errors.");
+	vec.push_back("Rmeco made sure I tested all the stuff i did not want to see anymore!");
+	vec.push_back("P.S. special mention to Lars for his slaps when I did something very stupid.");
+
+	it = vec.begin();
+	cit = vec.begin();
+	rit = vec.rend() - 1;
+	crit = vec.rend() - 1;
+	// *it
+	std::cout << "*it: " << *it << " | *cit: " << *cit << " | *rit: " << *rit << " | *crit: " << *crit << std::endl;	
+	// it->
+	std::cout << "->it: " << it->append("->op1") << " | ->cit: "<< cit->data() << " | ->rit: "<< rit->append("->op2")<< " | ->crit: " << crit->data() << std::endl;
+	// ++it & --rit
+	std::cout << "++it: " << *++it << " | ++cit: " << *++cit << " | --rit: " << *--rit << " | --crit: " << *--crit << std::endl;
+	// it++ & rit--
+	std::cout << "it++: " << *it++ << " | cit++: " << *cit++ << " | rit--: " << *rit-- << " | crit--: " << *crit-- << std::endl;
+	// --it & ++rit
+	std::cout << "--it: " << *--it << " | --cit: " << *--cit << " | ++rit: " << *++rit << " | ++crit: " << *++crit << std::endl;
+	// it-- & rit++
+	std::cout << "it--: " << *it-- << " | cit--: " << *cit-- << " | rit++: " << *rit++ << " | crit++: " << *crit++ << std::endl;
+	std::cout << *it << *rit << std::endl;
+	// it + n & rit - n
+	it = it + 3;
+	rit = rit - 3;
+	std::cout << "it + n: " << *it << " | rit - n: " << *rit << std::endl;
+	// n + it & n + rit
+	it = 1 + it;
+	rit = 1 + rit;
+	std::cout << "n + it: " << *it << " | n + rit: " << *rit << std::endl;
+	// it - n & rit + n
+	it = it - 2;
+	rit = rit + 2;
+	std::cout << "it - n: " << *it << " | rit + n: " << *rit << std::endl;
+	// it - cit & rit - crit
+	std::cout << "it - cit: " << it - cit << " | rit - crit: " << rit - crit << std::endl;
+	// it < cit
+	std::cout << "it < cit: " << (it < cit) << std::endl;
+	// it > cit
+	std::cout << "it > cit: " << (it > cit) << std::endl;
+	// it <= cit
+	std::cout << "it <= cit: " << (it <= cit) << std::endl;
+	// it >= cit
+	std::cout << "it >= cit: " << (it >= cit) << std::endl;
+	// it += n
+	it += 1;
+	rit -= 1;
+	std::cout << "it += n: " << *it << " | rit -= n: " << *rit << std::endl;
+	// it -= n
+	it -= 1;
+	rit += 1;
+	std::cout << "it -= n: " << *it << " | rit += n: " << *rit << std::endl;
+	// it[n]
+	std::cout << "it[n]: " << it[2] << " | cit[n]: " << cit[2] << " | rit[n]: " << rit[-2] << " | crit[n]: " << crit[-2] << std::endl;
+	printVector(vec);
+}
+
+void	testVNonMemberFunctions()
+{
+	std::cout << "+-----------------------------+" << std::endl;
+	std::cout << "| Vector Non member functions |" << std::endl;
+	std::cout << "+-----------------------------+" << std::endl << std::endl;
+	s::vector<int>				vec1, vec2;
+	std::string					result;
+		
+	for (size_t i = 0; i < 8; i++)
+		vec1.push_back(i);
+	std::cout << "\tRandom numbers vector (vec1) and an empty vector (vec2)" << std::endl;
+	std::cout << "vec1 == vec2: " << std::boolalpha << (vec1 == vec2) << std::endl;
+	std::cout << "vec1 != vec2: " << std::boolalpha << (vec1 != vec2) << std::endl;
+	std::cout << "vec1 <= vec2: " << std::boolalpha << (vec1 <= vec2) << std::endl;
+	std::cout << "vec1 >= vec2: " << std::boolalpha << (vec1 >= vec2) << std::endl;
+	std::cout << std::endl << "\tExecuting vec2 = vec1" << std::endl;
+	vec2 = vec1;
+	std::cout << "vec1 == vec2: " << std::boolalpha << (vec1 == vec2) << std::endl;
+	std::cout << "vec1 != vec2: " << std::boolalpha << (vec1 != vec2) << std::endl;
+	std::cout << "vec1 <= vec2: " << std::boolalpha << (vec1 <= vec2) << std::endl;
+	std::cout << "vec1 >= vec2: " << std::boolalpha << (vec1 >= vec2) << std::endl;
+	std::cout << std::endl << "\tExecuting a push_back for vec1" << std::endl;
+	vec1.push_back(1337);
+	std::cout << "vec1 < vec2: " << std::boolalpha << (vec1 < vec2) << std::endl;
+	std::cout << "vec1 > vec2: " << std::boolalpha << (vec1 > vec2) << std::endl;
+	std::cout << std::endl << "\tChanging the first index without changing the size" << std::endl;
+	vec1[0] = 1;
+	vec2[0] = 2;
+	std::cout << "vec1 < vec2: " << std::boolalpha << (vec1 < vec2) << std::endl;
+	std::cout << "vec1 > vec2: " << std::boolalpha << (vec1 > vec2) << std::endl;
+	std::cout << std::endl << "Swap:" << std::endl;
+	printVector(vec1);
+	printVector(vec2);
+	s::swap(vec1, vec2);
+	printVector(vec1);
+	printVector(vec2);
+}
+
+void	testVstresstest()
+{
+	std::cout << "+-------------------+" << std::endl;
+	std::cout << "| Vector Stress test|" << std::endl;
+	std::cout << "+-------------------+" << std::endl << std::endl;
+	s::vector<int>		stressVec;
+
+	for (size_t i = 0; i < 1000000; i++)
+		stressVec.insert(stressVec.begin() + i, 1, i * 3);
+	printVector(stressVec);
+}
+
 void	testMConstructorsAssignmentOperator()
 {
 	std::cout << "+------------------+" << std::endl;
@@ -685,12 +875,12 @@ void	testMErase()
 	one.erase(0);
 	printMap(one);
 	std::cout << std::endl << std::endl << std::endl;
-	// one.erase(one.begin(), one.begin());
-	// printMap(one);
-	// one.erase(one.begin(), one.begin()++);
-	// printMap(one);
-	// one.erase(one.begin()++, (one.begin()++)++);
-	// printMap(one);
+	one.erase(one.begin(), one.begin());
+	printMap(one);
+	one.erase(one.begin(), one.begin()++);
+	printMap(one);
+	one.erase(one.begin()++, (one.begin()++)++);
+	printMap(one);
 	one.erase(one.begin(), one.end());
 	printMap(one);
 	std::cout << std::endl << std::endl << std::endl;
@@ -802,4 +992,146 @@ void	testMFind()
 	ret = one.upper_bound(100);
 	for (; ret != one.end(); ret++)
 		printValueType(*ret);
+}
+
+void	testMIteratorFunctions()
+{
+	std::cout << "+------------------------+" << std::endl;
+	std::cout << "| Map Iterator functions |" << std::endl;
+	std::cout << "+------------------------+" << std::endl << std::endl;
+	s::map<char, int>							map;
+	s::map<char, int>::iterator					it;
+	s::map<char, int>::const_iterator			cit;
+	s::map<char, int>::reverse_iterator			rit;
+	s::map<char, int>::const_reverse_iterator	crit;
+
+	for (size_t i = 0; i < 15; i++)
+		map['a' + i] = i;
+	it = map.begin();
+	cit = map.begin();
+	rit = map.rbegin();
+	crit = map.rbegin();
+	std::cout << "Begin: " << it->first << std::endl;
+	std::cout << "Const begin: " << cit->first << std::endl;
+	std::cout << "Reverse begin: " << rit->first << std::endl;
+	std::cout << "Const reverse begin: " << crit->first << std::endl;
+	
+	it = --map.end()--;
+	cit = --map.end()--;
+	rit = --map.rend()--;
+	crit = --map.rend()--;
+	std::cout << "End: [" << it->first << "]" << std::endl;
+	std::cout << "Const end: [" << cit->first << "]" << std::endl;
+	std::cout << "Reverse end: [" << rit->first << "]" << std::endl;
+	std::cout << "Const reverse end: [" << crit->first << "]" << std::endl;
+
+	printMap(map);
+}
+
+void	TestMIteratorOperators()
+{
+	std::cout << "+------------------------+" << std::endl;
+	std::cout << "| Map Iterator operators |" << std::endl;
+	std::cout << "+------------------------+" << std::endl << std::endl;
+	s::map<char, int>							map;
+	s::map<char, int>::iterator				it;
+	s::map<char, int>::const_iterator			cit;
+	s::map<char, int>::reverse_iterator		rit;
+	s::map<char, int>::const_reverse_iterator	crit;
+	s::map<char, int>::iterator				itCopy(it);
+	
+	for (size_t i = 0; i < 15; i++)
+		map['a' + i % 26] = i;
+	it = map.begin();
+	cit = map.begin();
+	rit = --map.rend()--;
+	crit = --map.rend()--;
+	// *it
+	std::cout << "*it|*cit|*rit|*crit: " << (*it).first << (*cit).first << (*rit).first << (*crit).first << std::endl;
+	// it->
+	std::cout << "it->|cit->|rit->|crit->: " << it->first << cit->first << rit->first << crit->first << std::endl;
+	// ++it & --rit
+	std::cout << "++it|++cit|--rit|--crit: " << (++it)->first << (++cit)->first << (--rit)->first << (--crit)->first << std::endl;
+	// it++ & rit--
+	std::cout << "it++|cit++|rit--|crit--: " << (it++)->first << (cit++)->first << (rit--)->first << (crit--)->first << std::endl;
+	// == & != & =
+	std::cout << (itCopy == it) << std::endl;
+	std::cout << (itCopy != it) << std::endl;
+	itCopy = it;
+	std::cout << (itCopy == it) << std::endl;
+	std::cout << (itCopy != it) << std::endl;
+}
+
+void	testMstresstest()
+{
+	std::cout << "+-----------------+" << std::endl;
+	std::cout << "| Map stress test |" << std::endl;
+	std::cout << "+-----------------+" << std::endl << std::endl;
+
+	s::map<int, int>	stressMap;
+
+	for (size_t i = 0; i < 300000; i++)
+		stressMap.insert(s::make_pair(i, i*i));
+}
+
+void	testSConstructors()
+{
+	std::cout << "+--------------------+" << std::endl;
+	std::cout << "| Stack constructors |" << std::endl;
+	std::cout << "+--------------------+" << std::endl << std::endl;
+
+	std::deque<int> mydeque (3,100);
+	s::vector<int> myvector (2,200);
+
+	s::stack<int> first;
+	s::stack<int,std::deque<int> > second (mydeque);
+
+	s::stack<int,s::vector<int> > third;
+	s::stack<int,s::vector<int> > fourth (myvector);
+
+	std::cout << "size of first: " << first.size() << '\n';
+	std::cout << "size of second: " << second.size() << '\n';
+	std::cout << "size of third: " << third.size() << '\n';
+	std::cout << "size of fourth: " << fourth.size() << '\n';
+}
+
+void	testS()
+{
+	std::cout << "+------------------------+" << std::endl;
+	std::cout << "| is_integral |" << std::endl;
+	std::cout << "+------------------------+" << std::endl << std::endl;
+	s::stack<int> first;
+
+	std::cout << "empty: " << first.empty() << std::endl;
+	first.push(10);
+	printStack(first);
+	std::cout << "empty: " << first.empty() << std::endl;
+	first.push(10);
+	first.push(20);
+	first.push(30);
+	first.push(40);
+	printStack(first);
+	first.pop();
+	printStack(first);
+}
+
+void	test_is_integral()
+{
+	std::cout << "+-------------+" << std::endl;
+	std::cout << "| is_integral |" << std::endl;
+	std::cout << "+-------------+" << std::endl << std::endl;
+
+	std::cout << std::boolalpha;
+	std::cout << "is_integral:" << std::endl;
+	std::cout << "char: " << s::is_integral<char>::value << std::endl;
+	std::cout << "int: " << s::is_integral<int>::value << std::endl;
+	std::cout << "float: " << s::is_integral<float>::value << std::endl;
+
+	std::cout << "char: " << s::is_integral<const char>::value << std::endl;
+	std::cout << "int: " << s::is_integral<const int>::value << std::endl;
+	std::cout << "float: " << s::is_integral<const float>::value << std::endl;
+
+	std::cout << "char: " << s::is_integral<volatile char>::value << std::endl;
+	std::cout << "int: " << s::is_integral<volatile int>::value << std::endl;
+	std::cout << "float: " << s::is_integral<volatile float>::value << std::endl;
 }

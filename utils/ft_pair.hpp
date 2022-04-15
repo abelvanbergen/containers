@@ -6,7 +6,7 @@
 /*   By: avan-ber <avan-ber@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/10/12 10:53:17 by avan-ber      #+#    #+#                 */
-/*   Updated: 2021/10/18 16:14:26 by avan-ber      ########   odam.nl         */
+/*   Updated: 2022/04/15 21:19:27 by avan-ber      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,23 +17,16 @@ namespace ft {
 	template <class T1, class T2>
 	struct pair
 	{
+		//////////////
+		// typedefs //
+		//////////////
 		public:
 			typedef T1		first_type;
 			typedef T2		second_type;
 
+		public:
 			first_type		first;
 			second_type		second;
-
-			/////////////////////////
-			// Assignment operator //
-			/////////////////////////
-
-			pair&	operator= (const pair& pr)
-			{
-				this->first = pr.first;
-				this->second = pr.second;
-				return *this;
-			}
 
 			//////////////////
 			// constructors //
@@ -55,6 +48,17 @@ namespace ft {
 				return ;
 			}
 
+			/////////////////////////
+			// Assignment operator //
+			/////////////////////////
+
+			pair&	operator= (const pair& pr)
+			{
+				this->first = pr.first;
+				this->second = pr.second;
+				return *this;
+			}
+
 			////////////////
 			// destructor //
 			////////////////
@@ -62,10 +66,20 @@ namespace ft {
 			{
 				return ;
 			}
+
+			////////////
+			// friend //
+			////////////
+			template <class U1, class U2>
+			friend bool	operator== (const pair<U1,U2>& lhs, const pair<U1,U2>& rhs);
+		
+			template <class U1, class U2>
+			friend bool	operator< (const pair<U1,U2>& lhs, const pair<U1,U2>& rhs);
+
 	}; //end struct pair
 
 	///////////////////////////////////
-	// NON-MEMBER FUNCTION OVERLOADS //
+	// Non-member function overloads //
 	///////////////////////////////////
 
 	template <class T1, class T2>

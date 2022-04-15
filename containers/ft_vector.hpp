@@ -6,7 +6,7 @@
 /*   By: avan-ber <avan-ber@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/09/10 10:59:42 by avan-ber      #+#    #+#                 */
-/*   Updated: 2022/04/05 11:20:52 by avan-ber      ########   odam.nl         */
+/*   Updated: 2022/04/15 15:25:38 by avan-ber      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,10 +15,11 @@
 
 # include <memory>
 # include <exception>
-# include "ft_random_access_iterator.hpp"
-# include "ft_reverse_iterator.hpp"
-# include "ft_utils.hpp"
-# include "type_traits.hpp"
+
+# include <ft_random_access_iterator.hpp>
+# include <ft_reverse_iterator.hpp>
+# include <ft_utils.hpp>
+# include <ft_type_traits.hpp>
 
 namespace ft {
 	template <class T, class Alloc = std::allocator<T> >
@@ -37,7 +38,7 @@ namespace ft {
 			typedef random_access_iterator<T, T*, T&>					iterator;
 			typedef random_access_iterator<T, const T*, const T&>		const_iterator;
 			typedef ft::reverse_iterator<iterator>						reverse_iterator;
-			typedef ft::reverse_iterator<const_iterator>					const_reverse_iterator;
+			typedef ft::reverse_iterator<const_iterator>				const_reverse_iterator;
 			typedef typename iterator_traits<iterator>::difference_type	difference_type;
 			typedef typename allocator_type::size_type					size_type;
 
@@ -47,6 +48,10 @@ namespace ft {
 			size_type				_size;
 			allocator_type			_alloc;
 
+			//////////////////////
+			// Array management //
+			//////////////////////
+		private:
 			void		_addNewElement (const value_type& val, size_type index)
 			{
 				this->_alloc.construct(&(this->_array[index]), val);
@@ -70,10 +75,63 @@ namespace ft {
 				this->_array = temp;
 			}
 
+			//////////////////
+			// constructors //
+			//////////////////
 		public:
+			vector (const vector& x) : _array(NULL), _capacity(0), _size(0), _alloc(x._alloc)
+			{
+				this->_resizeArray(x._size, 0);
+				for (size_type i = 0; i < x._size; i++)
+					this->push_back(x._array[i]);
+			}
+
+			explicit vector (size_type n, const value_type& val = value_type(), const allocator_type& alloc = allocator_type()) : _array(NULL), _capacity(0), _size(0), _alloc(alloc)
+			{
+				this->_resizeArray(n, 0);
+				for (size_type i = 0; i < n; i++)
+					this->push_back(val);
+			}
+
+			template <class InputIterator>
+			vector (InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type(), typename ft::enable_if<ft::is_inputiterator<InputIterator>::value>::type* = NULL) : _array(NULL), _capacity(0), _size(0), _alloc(alloc)
+			{
+				this->_resizeArray(ft::distance(first , last), 0);
+				for (; first != last; first++)
+					this->push_back(*first);
+			}
+
+			explicit vector (const allocator_type& alloc = allocator_type()) : _array(NULL), _capacity(0), _size(0), _alloc(alloc)
+			{
+				return ;
+			}
+
+			/////////////////////////
+			// assignment operator //
+			/////////////////////////
+			vector&	operator= (const vector& x)
+			{
+				this->_alloc = x._alloc;
+				this->assign(x.begin(), x.end());
+				return *this;
+			}
+
+			/////////////////
+			// destructors //
+			/////////////////
+			~vector (void)
+			{
+				if (this->_size > 0)
+				{
+					this->clear();
+					this->_alloc.deallocate(this->_array, this->_capacity);
+				}
+				return ;
+			}
 			///////////////
 			// Iterators //
 			///////////////
+		public:
 			iterator begin ()
 			{
 				return (iterator(this->_array));
@@ -96,27 +154,27 @@ namespace ft {
 
 			reverse_iterator rbegin()
 			{
-				return (reverse_iterator(this->_array) + this->_size - 1);
+				return (reverse_iterator(this->_array  + (this->_size - 1)));
 			}
 
 			const_reverse_iterator rbegin() const
 			{
-				return (const_reverse_iterator(this->_array) + this->_size - 1);
+				return (const_reverse_iterator(this->_array + (this->_size - 1)));
 			}
 
 			reverse_iterator rend()
 			{
-				return (reverse_iterator(this->_array) - 1);
+				return (reverse_iterator(this->_array - 1));
 			}
 
 			const_reverse_iterator rend() const
 			{
-				return (const_reverse_iterator(this->_array) - 1);
+				return (const_reverse_iterator(this->_array - 1));
 			}
+
 			//////////////
 			// Capacity //
 			//////////////
-
 			size_type		size (void) const {return this->_size;}
 			size_type		max_size (void) const {return this->_alloc.max_size();}
 			size_type		capacity (void) const {return this->_capacity;}
@@ -154,7 +212,6 @@ namespace ft {
 			////////////////////
 			// Element access //
 			////////////////////
-
 			reference	operator[] (size_type n){return this->_array[n];}
 			const_reference	operator[] (size_type n) const {return this->_array[n];}
 
@@ -180,7 +237,6 @@ namespace ft {
 			///////////////
 			// modifiers //
 			///////////////
-
 			template <class InputIterator>
 			typename ft::enable_if<ft::is_inputiterator<InputIterator>::value, void>::type	assign (InputIterator first, InputIterator last)
 			{
@@ -236,7 +292,6 @@ namespace ft {
 				return (amountToConstruct);
 			}
 
-		private:
 			size_type	_assignElement (size_type amountToConstruct, size_type i_dst, const value_type& val)
 			{
 				if (amountToConstruct > 0)
@@ -326,59 +381,6 @@ namespace ft {
 				while (this->empty() == false)
 					this->pop_back();
 			}
-
-			/////////////////////////
-			// assignment operator //
-			/////////////////////////
-			vector&	operator= (const vector& x)
-			{
-				this->_alloc = x._alloc;
-				this->assign(x.begin(), x.end());
-				return *this;
-			}
-
-			//////////////////
-			// constructors //
-			//////////////////
-			vector (const vector& x) : _array(NULL), _capacity(0), _size(0), _alloc(x._alloc)
-			{
-				this->_resizeArray(x._size, 0);
-				for (size_type i = 0; i < x._size; i++)
-					this->push_back(x._array[i]);
-			}
-
-			explicit vector (size_type n, const value_type& val = value_type(), const allocator_type& alloc = allocator_type()) : _array(NULL), _capacity(0), _size(0), _alloc(alloc)
-			{
-				this->_resizeArray(n, 0);
-				for (size_type i = 0; i < n; i++)
-					this->push_back(val);
-			}
-
-			template <class InputIterator>
-			vector (InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type(), typename ft::enable_if<ft::is_inputiterator<InputIterator>::value>::type* = NULL) : _array(NULL), _capacity(0), _size(0), _alloc(alloc)
-			{
-				this->_resizeArray(ft::distance(first , last), 0);
-				for (; first != last; first++)
-					this->push_back(*first);
-			}
-
-			explicit vector (const allocator_type& alloc = allocator_type()) : _array(NULL), _capacity(0), _size(0), _alloc(alloc)
-			{
-				return ;
-			}
-
-			/////////////////
-			// destructors //
-			/////////////////
-			~vector (void)
-			{
-				if (this->_size > 0)
-				{
-					this->clear();
-					this->_alloc.deallocate(this->_array, this->_capacity);
-				}
-				return ;
-			}
 	}; //end vector
 
 	///////////////////////////
@@ -419,6 +421,16 @@ namespace ft {
 	{
 		return !(lhs < rhs);
 	}
+
+	//////////
+	// swap //
+	//////////
+	template <class T, class Alloc>
+	void swap (vector<T,Alloc>& x, vector<T,Alloc>& y)
+	{
+		x.swap(y);
+	}
+
 } //end namespace
 
 #endif
