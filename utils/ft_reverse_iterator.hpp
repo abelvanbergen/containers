@@ -6,7 +6,7 @@
 /*   By: avan-ber <avan-ber@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/04/04 13:13:00 by avan-ber      #+#    #+#                 */
-/*   Updated: 2022/04/15 21:09:32 by avan-ber      ########   odam.nl         */
+/*   Updated: 2022/04/16 10:53:01 by avan-ber      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -136,9 +136,11 @@ namespace ft {
 				this->_base += n;
 				return *this;
 			}
-
-			public:
 			
+			//////////////////////////////////
+			// Implicit conversion operator //
+			//////////////////////////////////
+		public:
 			operator const_reverse_iterator() const
 			{
 				return (const_reverse_iterator(this->_base));

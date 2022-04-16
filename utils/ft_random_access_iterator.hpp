@@ -6,7 +6,7 @@
 /*   By: avan-ber <avan-ber@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/09/21 09:22:52 by avan-ber      #+#    #+#                 */
-/*   Updated: 2022/04/15 21:06:15 by avan-ber      ########   odam.nl         */
+/*   Updated: 2022/04/16 10:53:11 by avan-ber      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -137,6 +137,9 @@ namespace ft {
 				return *(this->_ptr + n);
 			}
 		
+			//////////////////////////////////
+			// Implicit conversion operator //
+			//////////////////////////////////
 		public:
 			operator const_iterator() const
 			{

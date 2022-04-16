@@ -6,7 +6,7 @@
 /*   By: avan-ber <avan-ber@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/10/12 10:53:17 by avan-ber      #+#    #+#                 */
-/*   Updated: 2022/04/15 21:19:27 by avan-ber      ########   odam.nl         */
+/*   Updated: 2022/04/16 11:03:35 by avan-ber      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,4 +127,3 @@ namespace ft {
 } //end namespace
 
 #endif
-
