@@ -6,7 +6,7 @@
 #    By: avan-ber <avan-ber@student.codam.nl>         +#+                      #
 #                                                    +#+                       #
 #    Created: 2021/10/05 10:29:50 by avan-ber      #+#    #+#                  #
-#    Updated: 2022/04/16 11:03:20 by avan-ber      ########   odam.nl          #
+#    Updated: 2022/04/19 11:36:27 by avan-ber      ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
@@ -33,18 +33,18 @@ INCLUDES =	containers/ft_map.hpp \
 
 C++FLAGS = -Wall -Wextra -Werror -std=c++98 -pedantic
 
-all: test
-
-test: $(NAME) $(STD_NAME)
-	./$(NAME) > $(FT_RES)
-	./$(STD_NAME) > $(STD_RES)
-	diff $(FT_RES) $(STD_RES)
+all: $(NAME)
 
 $(NAME): $(INCLUDES)
 	$(CC) $(C++FLAGS) $(SRC) -I containers -I utils -o $(NAME)
 	
 $(STD_NAME):
 	$(CC) $(C++FLAGS) $(SRC) -D STD -o $(STD_NAME)
+
+test: $(NAME) $(STD_NAME)
+	./$(NAME) > $(FT_RES)
+	./$(STD_NAME) > $(STD_RES)
+	diff $(FT_RES) $(STD_RES)
 
 testft: ft_fclean $(NAME)
 	./$(NAME)

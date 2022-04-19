@@ -6,7 +6,7 @@
 /*   By: avan-ber <avan-ber@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/09/10 10:59:42 by avan-ber      #+#    #+#                 */
-/*   Updated: 2022/04/15 15:25:38 by avan-ber      ########   odam.nl         */
+/*   Updated: 2022/04/19 11:35:26 by avan-ber      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,8 +124,9 @@ namespace ft {
 				if (this->_size > 0)
 				{
 					this->clear();
-					this->_alloc.deallocate(this->_array, this->_capacity);
 				}
+				if (this->_array)
+					this->_alloc.deallocate(this->_array, this->_capacity);
 				return ;
 			}
 			///////////////
@@ -218,14 +219,14 @@ namespace ft {
 			reference at (size_type n)
 			{
 				if (n >= this->_size)
-					throw std::out_of_range("vector [reference at(size_type n)]");
+					throw std::out_of_range("vector");
 				return (this->_array[n]);
 			}
 
 			const_reference at (size_type n) const
 			{
 				if (n >= this->_size)
-					throw std::out_of_range("vector [const_reference at(size_type n)]");
+					throw std::out_of_range("vector");
 				return (this->_array[n]);
 			}
 

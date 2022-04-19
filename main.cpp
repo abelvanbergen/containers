@@ -6,7 +6,7 @@
 /*   By: avan-ber <avan-ber@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/09/29 08:53:50 by avan-ber      #+#    #+#                 */
-/*   Updated: 2022/04/15 18:52:54 by avan-ber      ########   odam.nl         */
+/*   Updated: 2022/04/18 10:58:07 by avan-ber      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1072,6 +1072,7 @@ void	testMstresstest()
 
 	for (size_t i = 0; i < 300000; i++)
 		stressMap.insert(s::make_pair(i, i*i));
+	printMap(stressMap);
 }
 
 void	testSConstructors()
